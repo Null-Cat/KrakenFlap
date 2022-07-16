@@ -131,7 +131,7 @@ let upButton;
 function preload() {
     this.load.spritesheet('player', 'js/assets/player.png', { frameWidth: 80, frameHeight: 24 });
     this.load.image(assets.tentacle.top, 'js/assets/tentacle.png');
-    this.load.image(assets.tentacle.bottom, 'js/assets/tentacleinverse.png');
+    this.load.image(assets.tentacle.bottom, 'js/assets/tentacleInverse.png');
     this.load.image('coffee', 'js/assets/coffee.png');
     this.load.image('underwaterBg', 'js/assets/underwaterbg.png');
     this.load.image('title', 'js/assets/KrakenFlapWhite.png');
