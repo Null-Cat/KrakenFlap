@@ -4,11 +4,12 @@
   "description": "",
   "main": "krakenflap.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node server.js"
   },
   "author": "Philip White",
   "license": "UNLICENSED",
   "dependencies": {
+    "express": "^4.18.1",
     "phaser": "^3.55.2"
   }
 }
