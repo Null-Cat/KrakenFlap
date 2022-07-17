@@ -311,11 +311,11 @@ function createTentacles(scene = game.scene.scenes[0]) {
 
     const tentacleTop = tentaclesGroup.create(tentacleXSpawn, tentacleTopY, assets.tentacle.top);
     tentacleTop.body.allowGravity = false;
-    tentacleTop.setSize(tentacleTop.width - 20, tentacleTop.height, true);
+    tentacleTop.setSize(tentacleTop.width - 30, tentacleTop.height, true);
 
     const tentacleBottom = tentaclesGroup.create(tentacleXSpawn, tentacleTopY + 420, assets.tentacle.bottom);
     tentacleBottom.body.allowGravity = false;
-    tentacleBottom.setSize(tentacleTop.width - 20, tentacleTop.height, true);
+    tentacleBottom.setSize(tentacleTop.width - 30, tentacleTop.height, true);
 }
 
 function movePlayer() {
