@@ -241,7 +241,7 @@ function create() {
     gameOverBanner.visible = false;
 
     background = this.add.tileSprite(800, 300, 1600, 600, 'underwaterBg');
-    
+
     scoreText = this.add.text(256, 156, "0", {
         font: "32px Verdana",
         fill: "#ffffff",
@@ -249,12 +249,12 @@ function create() {
     });
     scoreText.setDepth(30);
     scoreText.visible = false;
-    
-    tentacleSpawnTimer = this.time.addEvent({ delay: 1000, callback: createTentacles, callbackScope: this, loop: true });
+
+    tentacleSpawnTimer = this.time.addEvent({ delay: 1500, callback: createTentacles, callbackScope: this, loop: true });
     tentacleSpawnTimer.paused = true;
 
     prepareGame(this)
-    
+
     upButton = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
     this.input.on('pointerdown', movePlayer);
 
@@ -318,7 +318,12 @@ function movePlayer() {
     if (gameOver) restartGame();
     if (!gameStarted) startGame(game.scene.scenes[0]);
 
-    player.setVelocityY(-300);
+    if (deviceType == 'mobile' || deviceType == 'tablet') {
+        player.setVelocityY(-200);
+    }
+    else {
+        player.setVelocityY(-400);
+    }
     player.angle = -15;
     jumpFrames = 8;
 }
@@ -385,3 +390,14 @@ function playerHit(player) {
 function onWorldBounds(collider) {
     playerHit(player);
 }
+
+const deviceType = () => {
+    const ua = navigator.userAgent;
+    if (/(tablet|ipad|playbook|silk)|(android(?!.*mobi))/i.test(ua)) {
+        return "tablet";
+    }
+    else if (/Mobile|Android|iP(hone|od)|IEMobile|BlackBerry|Kindle|Silk-Accelerated|(hpw|web)OS|Opera M(obi|ini)/.test(ua)) {
+        return "mobile";
+    }
+    return "desktop";
+};
