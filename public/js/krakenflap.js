@@ -296,6 +296,8 @@ function update() {
     gapsGroup.children.iterate(function (child) {
         child.body.setVelocityX(-100);
     });
+
+    console.log(tentacleSpawnTimer.delay);
 }
 
 function createTentacles(scene = game.scene.scenes[0]) {
@@ -374,6 +376,7 @@ function restartGame() {
 function updateScore(_, gap) {
     score++;
     scoreText.setText(score);
+    tentacleSpawnTimer.delay = Phaser.Math.Clamp(tentacleSpawnTimer.delay - score * 2, 1600, 5000);
     gap.destroy();
 }
 
