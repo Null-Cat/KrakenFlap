@@ -108,7 +108,9 @@ const assets = {
 }
 
 let player;
-let score;
+let score = 0;
+let highScore = 0;
+let highScoreText;
 let scoreText;
 let coffee;
 
@@ -250,7 +252,7 @@ function create() {
     scoreText.setDepth(30);
     scoreText.visible = false;
 
-    tentacleSpawnTimer = this.time.addEvent({ delay: 1500, callback: createTentacles, callbackScope: this, loop: true });
+    tentacleSpawnTimer = this.time.addEvent({ delay: 2000, callback: createTentacles, callbackScope: this, loop: true });
     tentacleSpawnTimer.paused = true;
 
     prepareGame(this)
@@ -362,6 +364,7 @@ function restartGame() {
     gapsGroup.clear(true, true)
     title.visible = true;
     instructions.visible = true;
+    highScoreText.visible = false;
     player.destroy();
 
     prepareGame(game.scene.scenes[0]);
@@ -381,14 +384,29 @@ function playerHit(player) {
 
     player.anims.play('swim stop');
 
-    gameOverBanner.visible = true
+    gameOverBanner.visible = true;
     scoreText.visible = false;
+    if (score > highScore) {
+        highScore = score;
+    }
+    if (highScoreText) highScoreText.destroy();
+    showHighScore();
     //restartButton.visible = true
     tentacleSpawnTimer.paused = true;
 }
 
 function onWorldBounds(collider) {
     playerHit(player);
+}
+
+function showHighScore() {
+    highScoreText = game.scene.scenes[0].add.text(256, 300, `High Score: ${highScore}\nCurrent Score: ${score}`, {
+        font: "32px Verdana",
+        fill: "#ffffff",
+        align: "center"
+    }).setOrigin(0.5);
+    highScoreText.setDepth(30);
+    highScoreText.visible = true;
 }
 
 const deviceType = () => {
