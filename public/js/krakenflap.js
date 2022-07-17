@@ -3,7 +3,7 @@ var config = {
         hidePhaser: true
     },
     type: Phaser.AUTO,
-    width: 600,
+    width: 512,
     height: 512,
     physics: {
         default: 'arcade',
@@ -227,21 +227,21 @@ function create() {
     gapsGroup = this.physics.add.group()
     tentaclesGroup = this.physics.add.group()
 
-    title = this.add.image(300, 156, 'title');
+    title = this.add.image(256, 156, 'title');
     title.setDepth(30);
     title.visible = true;
 
-    instructions = this.add.image(300, 400, 'instructions');
+    instructions = this.add.image(256, 400, 'instructions');
     instructions.setDepth(30);
     instructions.visible = true;
 
-    gameOverBanner = this.add.image(300, 156, 'gameOver');
+    gameOverBanner = this.add.image(256, 156, 'gameOver');
     gameOverBanner.setDepth(30);
     gameOverBanner.visible = false;
 
     background = this.add.tileSprite(800, 300, 1600, 600, 'underwaterBg');
 
-    scoreText = this.add.text(300, 156, "0", {
+    scoreText = this.add.text(256, 156, "0", {
         font: "32px Verdana",
         fill: "#ffffff",
         align: "center"
@@ -350,10 +350,6 @@ function startGame(scene) {
     instructions.visible = false;
     gameOverBanner.visible = false;
     scoreText.visible = true;
-
-    //const score0 = scoreboardGroup.create(assets.scene.width, 30, assets.scoreboard.number0)
-    //score0.setDepth(20)
-
     createTentacles(scene);
 }
 
