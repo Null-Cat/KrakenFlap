@@ -113,6 +113,7 @@ let scoreText;
 let coffee;
 
 let jumpFrames;
+let tentacleSpawnTimer;
 
 let tentaclesGroup;
 let gapsGroup;
@@ -240,7 +241,7 @@ function create() {
     gameOverBanner.visible = false;
 
     background = this.add.tileSprite(800, 300, 1600, 600, 'underwaterBg');
-
+    
     scoreText = this.add.text(256, 156, "0", {
         font: "32px Verdana",
         fill: "#ffffff",
@@ -248,9 +249,12 @@ function create() {
     });
     scoreText.setDepth(30);
     scoreText.visible = false;
+    
+    tentacleSpawnTimer = this.time.addEvent({ delay: 1000, callback: createTentacles, callbackScope: this, loop: true });
+    tentacleSpawnTimer.paused = true;
 
     prepareGame(this)
-
+    
     upButton = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
     this.input.on('pointerdown', movePlayer);
 
@@ -290,15 +294,9 @@ function update() {
     gapsGroup.children.iterate(function (child) {
         child.body.setVelocityX(-100);
     });
-
-    framesTillSpawnTentacle++;
-    if (framesTillSpawnTentacle === 300) {
-        createTentacles(game.scene.scenes[0]);
-        framesTillSpawnTentacle = 0;
-    }
 }
 
-function createTentacles(scene) {
+function createTentacles(scene = game.scene.scenes[0]) {
     const tentacleTopY = Phaser.Math.Between(-10, 150);
     const tentacleXSpawn = 600;
 
@@ -320,7 +318,7 @@ function movePlayer() {
     if (gameOver) restartGame();
     if (!gameStarted) startGame(game.scene.scenes[0]);
 
-    player.setVelocityY(-400);
+    player.setVelocityY(-300);
     player.angle = -15;
     jumpFrames = 8;
 }
@@ -350,7 +348,8 @@ function startGame(scene) {
     instructions.visible = false;
     gameOverBanner.visible = false;
     scoreText.visible = true;
-    createTentacles(scene);
+    //createTentacles(scene);
+    tentacleSpawnTimer.paused = false;
 }
 
 function restartGame() {
@@ -380,6 +379,7 @@ function playerHit(player) {
     gameOverBanner.visible = true
     scoreText.visible = false;
     //restartButton.visible = true
+    tentacleSpawnTimer.paused = true;
 }
 
 function onWorldBounds(collider) {
