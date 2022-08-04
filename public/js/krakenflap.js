@@ -108,7 +108,8 @@ const assets = {
             'SPACE': 'om_large_plain_032_space',
             'EXCLAMATION': 'om_large_plain_033_exclamation_mark',
         }
-    }
+    },
+    textButton: "textButton"
 }
 
 let player;
@@ -118,12 +119,12 @@ let highScoreText;
 let scoreText;
 let coffee;
 
-let jumpFrames;
+let jumping = false;
+let jumpTimer;
 let tentacleSpawnTimer;
 
 let tentaclesGroup;
 let gapsGroup;
-let currentTentacles;
 
 let gameStarted;
 
@@ -132,11 +133,13 @@ let instructions;
 let gameOverBanner;
 let background;
 
-let cursors;
 let upButton;
+
+let deathScreenButtons = [];
 
 function preload() {
     this.load.spritesheet('player', 'js/assets/player.png', { frameWidth: 80, frameHeight: 24 });
+    //this.load.spritesheet(assets.textButton, 'js/assets/textButton.png', { frameWidth: 80, frameHeight: 24 }); //TODO: Add button texture
     this.load.image(assets.tentacle.top, 'js/assets/tentacle.png');
     this.load.image(assets.tentacle.bottom, 'js/assets/tentacleInverse.png');
     this.load.image('coffee', 'js/assets/coffee.png');
@@ -264,6 +267,12 @@ function create() {
     upButton = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
     this.input.on('pointerdown', movePlayer);
 
+    var buttonRestart = new uiWidgets.TextButton(this, 0, 0, "button", showGlobalLeaderboard, this, 1, 0, 2, 1).setText("Restart");
+    var buttonLeaderboard = new uiWidgets.TextButton(this, 0, 0, "button", showGlobalLeaderboard, this, 1, 0, 2, 1).setText("Leaderboard");
+    deathScreenButtons.push(buttonRestart);
+    deathScreenButtons.push(buttonLeaderboard);
+    deathScreenButtons.forEach(button => button.visible = false);
+
     cursors = this.input.keyboard.createCursorKeys();
 }
 
@@ -272,13 +281,10 @@ function update() {
 
     background.tilePositionX += 0.3;
 
-    if (jumpFrames > 0) {
-        jumpFrames--
-    }
-    else if (Phaser.Input.Keyboard.JustDown(upButton)) {
+    if (Phaser.Input.Keyboard.JustDown(upButton) && !jumping) {
         movePlayer()
     }
-    else {
+    else if (!jumping) {
         player.setVelocityY(120);
 
         if (player.angle < 90) {
@@ -300,8 +306,6 @@ function update() {
     gapsGroup.children.iterate(function (child) {
         child.body.setVelocityX(-100);
     });
-
-    console.log(tentacleSpawnTimer.delay);
 }
 
 function createTentacles(scene = game.scene.scenes[0]) {
@@ -323,7 +327,7 @@ function createTentacles(scene = game.scene.scenes[0]) {
 }
 
 function movePlayer() {
-    if (gameOver) restartGame();
+    //if (gameOver) restartGame();
     if (!gameStarted) startGame(game.scene.scenes[0]);
 
     if (deviceType == 'mobile' || deviceType == 'tablet') {
@@ -333,11 +337,12 @@ function movePlayer() {
         player.setVelocityY(-400);
     }
     player.angle = -15;
-    jumpFrames = 8;
+    jumping = true;
+    if (jumpTimer && jumpTimer.hasDispatched) jumpTimer.destroy();
+    jumpTimer = game.scene.scenes[0].time.addEvent({ delay: 50, callback: () => { jumping = false; }, callbackScope: this, loop: false });
 }
 
 function prepareGame(scene) {
-    jumpFrames = 0;
     framesTillSpawnTentacle = 0;
     score = 0;
     scoreText.setText(score);
@@ -414,6 +419,11 @@ function showHighScore() {
     }).setOrigin(0.5);
     highScoreText.setDepth(30);
     highScoreText.visible = true;
+}
+
+function showGlobalLeaderboard() {
+    deathScreenButtons.forEach(button => button.visible = true);
+
 }
 
 const deviceType = () => {
