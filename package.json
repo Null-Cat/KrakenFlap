@@ -4,7 +4,8 @@
   "description": "",
   "main": "krakenflap.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "devStart": "nodemon server.js"
   },
   "author": "Philip White",
   "license": "UNLICENSED",
@@ -12,5 +13,8 @@
     "express": "^4.18.1",
     "phaser": "^3.55.2",
     "phaser-ui-tools": "^2.0.0-beta"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.19"
   }
 }
