@@ -58,6 +58,12 @@ const assets = {
     textButton: "textButton",
     collectibles: {
         coffee: 'coffee'
+    },
+    audio: {
+        bgm: 'bgm',
+        splash: 'splash',
+        gulp: 'gulp',
+        success: 'success'
     }
 }
 
@@ -87,6 +93,9 @@ let upButton;
 
 let deathScreenButtons = [];
 
+let bgm;
+let gulp;
+let success;
 
 function preload() {
     var loadingText = this.make.text({
@@ -110,10 +119,20 @@ function preload() {
     this.load.image('title', 'js/assets/KrakenFlapWhite.png');
     this.load.image('instructions', 'js/assets/Instructions.png');
     this.load.image('gameOver', 'js/assets/GameOver.png');
+
+    this.load.audio(assets.audio.bgm, 'js/assets/bgm.mp3');
+    this.load.audio(assets.audio.splash, 'js/assets/splash.wav');
+    this.load.audio(assets.audio.gulp, 'js/assets/gulp.wav');
+    this.load.audio(assets.audio.success, 'js/assets/success.mp3');
 }
 
 function create() {
     Math.seedrandom();
+
+    bgm = this.sound.add(assets.audio.bgm, { loop: true });
+    gulp = this.sound.add(assets.audio.gulp, { loop: false });
+    success = this.sound.add(assets.audio.success, { loop: false });
+
     this.anims.create({
         key: 'swim',
         frames: this.anims.generateFrameNumbers('player', { start: 0, end: 6 }),
@@ -155,6 +174,7 @@ function create() {
     tentacleSpawnTimer = this.time.addEvent({ delay: 2000, callback: createTentacles, callbackScope: this, loop: true });
     tentacleSpawnTimer.paused = true;
 
+    bgm.play();
     prepareGame(this)
 
     upButton = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
@@ -199,7 +219,7 @@ function update() {
         movePlayer();
     }
     else if (!jumping) {
-        player.setVelocityY(120);
+        player.setVelocityY(150);
 
         if (player.angle < 90) {
             player.angle += 1;
@@ -257,17 +277,12 @@ function movePlayer() {
     if (gameOver) restartGame();
     if (!gameStarted) startGame(game.scene.scenes[0]);
 
-    // if (deviceType == 'mobile' || deviceType == 'tablet') {
-    //     player.setVelocityY(-200);
-    // }
-    // else {
-    //     player.setVelocityY(-400);
-    // }
-    player.setVelocityY(-400);
+    player.setVelocityY(-500);
     player.angle = -15;
     jumping = true;
     if (jumpTimer && jumpTimer.hasDispatched) jumpTimer.destroy();
-    jumpTimer = game.scene.scenes[0].time.addEvent({ delay: 50, callback: () => { jumping = false; }, callbackScope: this, loop: false });
+    jumpTimer = game.scene.scenes[0].time.addEvent({ delay: 100, callback: () => { jumping = false; }, callbackScope: this, loop: false });
+    game.scene.scenes[0].sound.add(assets.audio.splash, { loop: false }).play();
 }
 
 
@@ -302,7 +317,7 @@ function updateScore(_, gap) {
     scoreText.setText(score);
     tentacleSpawnTimer.delay = Phaser.Math.Clamp(tentacleSpawnTimer.delay - score * 2, 1600, 5000);
     gap.destroy();
-
+    success.play();
     Phaser.Math.Between(0, 100) >= 95 ? coffeeQueued++ : null;
 }
 
@@ -328,6 +343,7 @@ function onCoffeePickup(player, coffee) {
     score += 10;
     scoreText.setText(score);
     coffee.destroy();
+    gulp.play();
 }
 
 function onWorldBounds(collider) {
