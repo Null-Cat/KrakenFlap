@@ -11,7 +11,7 @@ var config = {
         hidePhaser: true
     },
     type: Phaser.AUTO,
-    width: 512,
+    width: 450,
     height: 512,
     physics: {
         default: 'arcade',
@@ -31,6 +31,8 @@ var config = {
         autoCenter: Phaser.Scale.CENTER_BOTH
     }
 };
+
+const screenCenter = config.width * 0.5;
 
 var game = new Phaser.Game(config);
 
@@ -134,7 +136,7 @@ let gapsGroup;
 let coffeeGroup;
 
 let gameStarted;
-let coffeeQueued = 1;
+let coffeeQueued = 0;
 
 let title;
 let instructions;
@@ -247,25 +249,25 @@ function create() {
     tentaclesGroup = this.physics.add.group();
     coffeeGroup = this.physics.add.group();
 
-    title = this.add.image(256, 156, 'title');
+    title = this.add.image(screenCenter, 156, 'title');
     title.setDepth(30);
     title.visible = true;
 
-    instructions = this.add.image(256, 400, 'instructions');
+    instructions = this.add.image(screenCenter, 400, 'instructions');
     instructions.setDepth(30);
     instructions.visible = true;
 
-    gameOverBanner = this.add.image(256, 156, 'gameOver');
+    gameOverBanner = this.add.image(screenCenter, 156, 'gameOver');
     gameOverBanner.setDepth(30);
     gameOverBanner.visible = false;
 
     background = this.add.tileSprite(800, 300, 1600, 600, 'underwaterBg');
 
-    scoreText = this.add.text(256, 156, "0", {
+    scoreText = this.add.text(screenCenter, 156, "0", {
         font: "32px Verdana",
         fill: "#ffffff",
         align: "center"
-    });
+    }).setOrigin(0.5);
     scoreText.setDepth(30);
     scoreText.visible = false;
 
@@ -450,7 +452,7 @@ function onWorldBounds(collider) {
 }
 
 function showHighScore() {
-    highScoreText = game.scene.scenes[0].add.text(256, 300, `High Score: ${highScore}\nCurrent Score: ${score}`, {
+    highScoreText = game.scene.scenes[0].add.text(screenCenter, 300, `High Score: ${highScore}\nCurrent Score: ${score}`, {
         font: "32px Verdana",
         fill: "#ffffff",
         align: "center"
