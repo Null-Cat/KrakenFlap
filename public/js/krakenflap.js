@@ -164,7 +164,7 @@ function create() {
     background = this.add.tileSprite(800, 300, 1600, 600, 'underwaterBg');
 
     scoreText = this.add.text(screenCenterWidth, 156, "0", {
-        font: "32px Verdana",
+        font: "32px kenney_mini_square_regular",
         fill: "#ffffff",
         align: "center"
     }).setOrigin(0.5);
@@ -352,7 +352,7 @@ function onWorldBounds(collider) {
 
 function showHighScore() {
     highScoreText = game.scene.scenes[0].add.text(screenCenterWidth, 300, `High Score: ${highScore}\nCurrent Score: ${score}`, {
-        font: "32px Verdana",
+        font: "32px kenney_mini_square_regular",
         fill: "#ffffff",
         align: "center"
     }).setOrigin(0.5);
