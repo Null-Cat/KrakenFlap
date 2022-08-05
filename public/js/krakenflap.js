@@ -98,17 +98,40 @@ let gulp;
 let success;
 
 function preload() {
-    var loadingText = this.make.text({
-        x: screenCenterWidth,
-        y: screenCenterHeight - 50,
+    //#region Loading Screen
+    let loadingText = this.make.text({
+        x: screenCenterWidth, y: screenCenterHeight - 50,
         text: 'Loading...',
         style: {
-            font: '20px monospace',
+            font: '20px kenney_mini_square_regular',
             fill: '#ffffff'
         }
+    }).setOrigin(0.5);
+    let percentText = this.make.text({
+        x: screenCenterWidth, y: screenCenterHeight - 5,
+        text: '0%',
+        style: {
+            font: '18px kenney_mini_square_regular',
+            fill: '#ffffff'
+        }
+    }).setOrigin(0.5);
+    let assetText = this.make.text({
+        x: screenCenterWidth, y: screenCenterHeight + 50,
+        text: '',
+        style: {
+            font: '18px kenney_mini_square_regular',
+            fill: '#ffffff'
+        }
+    }).setOrigin(0.5);
+
+    this.load.on('progress', (value) => { percentText.setText(parseInt(value * 100) + '%'); });
+    this.load.on('fileprogress', (file) => { assetText.setText('Loading asset: ' + file.key); });
+    this.load.on('complete', () => {
+        loadingText.destroy();
+        percentText.destroy();
+        assetText.destroy();
     });
-    loadingText.setOrigin(0.5, 0.5);
-    this.load.on('complete', () => { loadingText.destroy() });
+    //#endregion
 
     this.load.spritesheet('player', 'js/assets/player.png', { frameWidth: 80, frameHeight: 24 });
     //this.load.spritesheet(assets.textButton, 'js/assets/textButton.png', { frameWidth: 80, frameHeight: 24 }); //TODO: Add button texture
