@@ -160,6 +160,7 @@ let upButton;
 
 let deathScreenButtons = [];
 
+
 function preload() {
     this.load.spritesheet('player', 'js/assets/player.png', { frameWidth: 80, frameHeight: 24 });
     //this.load.spritesheet(assets.textButton, 'js/assets/textButton.png', { frameWidth: 80, frameHeight: 24 }); //TODO: Add button texture
@@ -301,6 +302,26 @@ function create() {
     cursors = this.input.keyboard.createCursorKeys();
 }
 
+function prepareGame(scene) {
+    framesTillSpawnTentacle = 0;
+    score = 0;
+    scoreText.setText(score);
+    gameOver = false;
+
+    player = scene.physics.add.sprite(60, 265, 'player');
+    player.setSize(25, 24, true);
+    player.setCollideWorldBounds(true);
+    player.anims.play('swim', true);
+    player.body.allowGravity = false;
+    player.body.onWorldBounds = true;
+    scene.physics.world.on('worldbounds', onWorldBounds);
+
+    scene.physics.add.collider(player, tentaclesGroup, playerHit, null, scene);
+    scene.physics.add.overlap(player, gapsGroup, updateScore, null, scene);
+    scene.physics.add.overlap(player, coffeeGroup, onCoffeePickup, null, scene);
+    scene.physics.add.overlap(coffeeGroup, tentaclesGroup, (coffee, tentacle) => { coffee.destroy(); }, null, scene);
+}
+
 function update() {
     if (gameOver || !gameStarted) return;
 
@@ -342,6 +363,46 @@ function update() {
     });
 }
 
+function startGame(scene) {
+    gameStarted = true;
+    title.visible = false;
+    instructions.visible = false;
+    gameOverBanner.visible = false;
+    scoreText.visible = true;
+    //createTentacles(scene);
+    tentacleSpawnTimer.paused = false;
+}
+
+function restartGame() {
+    tentaclesGroup.clear(true, true)
+    gapsGroup.clear(true, true)
+    title.visible = true;
+    instructions.visible = true;
+    highScoreText.visible = false;
+    player.destroy();
+
+    prepareGame(game.scene.scenes[0]);
+    game.scene.scenes[0].physics.resume();
+}
+
+function movePlayer() {
+    if (gameOver) restartGame();
+    if (!gameStarted) startGame(game.scene.scenes[0]);
+
+    // if (deviceType == 'mobile' || deviceType == 'tablet') {
+    //     player.setVelocityY(-200);
+    // }
+    // else {
+    //     player.setVelocityY(-400);
+    // }
+    player.setVelocityY(-400);
+    player.angle = -15;
+    jumping = true;
+    if (jumpTimer && jumpTimer.hasDispatched) jumpTimer.destroy();
+    jumpTimer = game.scene.scenes[0].time.addEvent({ delay: 50, callback: () => { jumping = false; }, callbackScope: this, loop: false });
+}
+
+
 function createTentacles(scene = game.scene.scenes[0]) {
     const tentacleTopY = Phaser.Math.Between(-10, 150);
     const tentacleXSpawn = 600;
@@ -368,72 +429,13 @@ function createCoffee() {
     coffee.setDepth(-1);
 }
 
-function movePlayer() {
-    //if (gameOver) restartGame();
-    if (!gameStarted) startGame(game.scene.scenes[0]);
-
-    // if (deviceType == 'mobile' || deviceType == 'tablet') {
-    //     player.setVelocityY(-200);
-    // }
-    // else {
-    //     player.setVelocityY(-400);
-    // }
-    player.setVelocityY(-400);
-    player.angle = -15;
-    jumping = true;
-    if (jumpTimer && jumpTimer.hasDispatched) jumpTimer.destroy();
-    jumpTimer = game.scene.scenes[0].time.addEvent({ delay: 50, callback: () => { jumping = false; }, callbackScope: this, loop: false });
-}
-
-function prepareGame(scene) {
-    framesTillSpawnTentacle = 0;
-    score = 0;
-    scoreText.setText(score);
-    gameOver = false;
-
-    player = scene.physics.add.sprite(60, 265, 'player');
-    player.setSize(25, 24, true);
-    player.setCollideWorldBounds(true);
-    player.anims.play('swim', true);
-    player.body.allowGravity = false;
-    player.body.onWorldBounds = true;
-    scene.physics.world.on('worldbounds', onWorldBounds);
-
-    scene.physics.add.collider(player, tentaclesGroup, playerHit, null, scene);
-    scene.physics.add.overlap(player, gapsGroup, updateScore, null, scene);
-    scene.physics.add.overlap(player, coffeeGroup, onCoffeePickup, null, scene);
-    scene.physics.add.overlap(coffeeGroup, tentaclesGroup, (coffee, tentacle) => { coffee.destroy(); }, null, scene);
-}
-
-function startGame(scene) {
-    gameStarted = true;
-    title.visible = false;
-    instructions.visible = false;
-    gameOverBanner.visible = false;
-    scoreText.visible = true;
-    //createTentacles(scene);
-    tentacleSpawnTimer.paused = false;
-}
-
-function restartGame() {
-    tentaclesGroup.clear(true, true)
-    gapsGroup.clear(true, true)
-    title.visible = true;
-    instructions.visible = true;
-    highScoreText.visible = false;
-    player.destroy();
-
-    prepareGame(game.scene.scenes[0]);
-    game.scene.scenes[0].physics.resume();
-}
-
 function updateScore(_, gap) {
     score++;
     scoreText.setText(score);
     tentacleSpawnTimer.delay = Phaser.Math.Clamp(tentacleSpawnTimer.delay - score * 2, 1600, 5000);
     gap.destroy();
 
-    Phaser.Math.Between(0, 100) >= 90 ? coffeeQueued++ : null;
+    Phaser.Math.Between(0, 100) >= 95 ? coffeeQueued++ : null;
 }
 
 function playerHit(player) {
