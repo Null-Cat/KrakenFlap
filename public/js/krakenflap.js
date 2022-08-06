@@ -85,7 +85,7 @@ let gapsGroup;
 let coffeeGroup;
 
 let gameStarted;
-let coffeeQueued = 1;
+let coffeeQueued = 0;
 
 let title;
 let instructions;
@@ -189,8 +189,8 @@ function create() {
 
     background = this.add.tileSprite(800, 300, 1600, 600, 'underwaterBg');
 
-    scoreText = this.add.text(screenCenterWidth, 156, "0", {
-        font: "32px kenney_mini_square_regular",
+    scoreText = this.add.text(screenCenterWidth, 120, "0", {
+        font: "40px kenney_mini_square_regular",
         fill: "#ffffff",
         align: "center"
     }).setOrigin(0.5);
