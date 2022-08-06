@@ -63,7 +63,10 @@ const assets = {
         bgm: 'bgm',
         splash: 'splash',
         gulp: 'gulp',
-        success: 'success'
+        success: 'success',
+        interface: { 
+
+        }
     }
 }
 
@@ -82,7 +85,7 @@ let gapsGroup;
 let coffeeGroup;
 
 let gameStarted;
-let coffeeQueued = 0;
+let coffeeQueued = 1;
 
 let title;
 let instructions;
@@ -332,7 +335,7 @@ function createCoffee() {
     const coffeeYSpawn = Phaser.Math.Between(-10, 200);
     const coffee = coffeeGroup.create(coffeeXSpawn, coffeeYSpawn + 150, assets.collectibles.coffee);
     coffee.body.allowGravity = false;
-    coffee.setDepth(-1);
+    coffee.setDepth(0);
 }
 
 function updateScore(_, gap) {
