@@ -219,6 +219,7 @@ function create() {
 function prepareGame(scene) {
     framesTillSpawnTentacle = 0;
     score = 0;
+    coffeeQueued = 0;
     scoreText.setText(score);
     gameOver = false;
 
@@ -288,8 +289,9 @@ function startGame(scene) {
 }
 
 function restartGame() {
-    tentaclesGroup.clear(true, true)
-    gapsGroup.clear(true, true)
+    tentaclesGroup.clear(true, true);
+    gapsGroup.clear(true, true);
+    coffeeGroup.clear(true, true);
     title.visible = true;
     instructions.visible = true;
     highScoreText.visible = false;
