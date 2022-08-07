@@ -151,7 +151,6 @@ function preload() {
 
   // #region Loading Assets
   this.load.spritesheet('player', 'js/assets/player.png', { frameWidth: 80, frameHeight: 24 })
-  // this.load.spritesheet(assets.textButton, 'js/assets/textButton.png', { frameWidth: 80, frameHeight: 24 }); //TODO: Add button texture
   this.load.spritesheet('blackBox', 'js/assets/blackbox.png', { frameWidth: 150, frameHeight: 50 })
   this.load.image(assets.tentacle.top, 'js/assets/tentacle.png')
   this.load.image(assets.tentacle.bottom, 'js/assets/tentacleInverse.png')
@@ -208,9 +207,6 @@ function create() {
   scoreText.setDepth(30)
   scoreText.visible = false
 
-  tentacleSpawnTimer = this.time.addEvent({ delay: 2000, callback: createTentacles, callbackScope: this, loop: true })
-  tentacleSpawnTimer.paused = true
-
   bgm.play()
   prepareGame(this)
 
@@ -250,6 +246,10 @@ function prepareGame(scene) {
   player.body.allowGravity = false
   player.body.onWorldBounds = true
   scene.physics.world.on('worldbounds', onWorldBounds)
+
+  if (tentacleSpawnTimer) tentacleSpawnTimer.destroy()
+  tentacleSpawnTimer = scene.time.addEvent({ delay: 2000, callback: createTentacles, callbackScope: this, loop: true })
+  tentacleSpawnTimer.paused = true
 
   scene.physics.add.collider(player, tentaclesGroup, playerHit, null, scene)
   scene.physics.add.overlap(player, gapsGroup, updateScore, null, scene)
@@ -319,11 +319,7 @@ function restartGame() {
 }
 
 function movePlayer() {
-  // if (gameOver) {
-  //   restartGame()
-  //   startGame(game.scene.scenes[0])
-  // }
-  if (!gameStarted) return // startGame(game.scene.scenes[0])
+  if (!gameStarted) return
 
   player.setVelocityY(-500)
   player.angle = -15
@@ -362,7 +358,7 @@ function createCoffee() {
 function updateScore(_, gap) {
   score++
   scoreText.setText(score)
-  tentacleSpawnTimer.delay = Phaser.Math.Clamp(tentacleSpawnTimer.delay - score * 2, 1600, 5000) // eslint-disable-line no-undef
+  tentacleSpawnTimer.delay = Phaser.Math.Clamp(tentacleSpawnTimer.delay - score, 1500, 5000) // eslint-disable-line no-undef
   gap.destroy()
   success.play()
   if (Phaser.Math.Between(0, 100) >= 95) coffeeQueued++ // eslint-disable-line no-undef
@@ -382,7 +378,6 @@ function playerHit(player) {
   }
   if (highScoreText) highScoreText.destroy()
   showHighScore()
-  deathScreenButtons.forEach((button) => { button.visible = true })
   tentacleSpawnTimer.paused = true
 }
 
