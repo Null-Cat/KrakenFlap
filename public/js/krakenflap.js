@@ -225,7 +225,7 @@ function create() {
   menuScreenButtonsColumn.addNode(buttonPlay, 0, 10)
   menuScreenButtonsColumn.addNode(buttonLeaderboard, 0, 10)
 
-  const buttonRestart = new uiWidgets.TextButton(this, -2, 1, 'blackBox', () => { startGame(game.scene.scenes[0]) }, this, 1, 0, 1, 0).setText('Restart', buttonTextStyle).setDepth(30) // eslint-disable-line no-undef
+  const buttonRestart = new uiWidgets.TextButton(this, -2, 1, 'blackBox', () => { restartGame(); startGame(game.scene.scenes[0]) }, this, 1, 0, 1, 0).setText('Restart', buttonTextStyle).setDepth(30) // eslint-disable-line no-undef
   const buttonLeaderboardDeath = new uiWidgets.TextButton(this, -2, 1, 'blackBox', () => { }, this, 1, 0, 1, 0).setText('Leaderboard', buttonTextStyle).setDepth(30) // eslint-disable-line no-undef
   deathScreenButtons.push(buttonRestart)
   deathScreenButtons.push(buttonLeaderboardDeath)
@@ -319,10 +319,10 @@ function restartGame() {
 }
 
 function movePlayer() {
-  if (gameOver) {
-    restartGame()
-    startGame(game.scene.scenes[0])
-  }
+  // if (gameOver) {
+  //   restartGame()
+  //   startGame(game.scene.scenes[0])
+  // }
   if (!gameStarted) return // startGame(game.scene.scenes[0])
 
   player.setVelocityY(-500)
