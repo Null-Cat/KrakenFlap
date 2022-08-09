@@ -110,6 +110,9 @@ let bgm
 let gulp
 let success
 
+let tentaclesDodged
+let coffeeCollected
+
 function preload() {
   // #region Loading Screen
   const loadingText = this.make.text({
@@ -236,6 +239,8 @@ function create() {
 function prepareGame(scene) {
   score = 0
   coffeeQueued = 0
+  coffeeCollected = 0
+  tentaclesDodged = 0
   scoreText.setText(score)
   gameOver = false
 
@@ -357,6 +362,8 @@ function createCoffee() {
 
 function updateScore(_, gap) {
   score++
+  if (score !== parseInt(scoreText.text) + 1) score = (score < parseInt(scoreText.text) + 1) ? parseInt(scoreText.text) + 1 : score
+  tentaclesDodged++
   scoreText.setText(score)
   tentacleSpawnTimer.delay = Phaser.Math.Clamp(tentacleSpawnTimer.delay - score, 1500, 5000) // eslint-disable-line no-undef
   gap.destroy()
@@ -383,6 +390,8 @@ function playerHit(player) {
 
 function onCoffeePickup(player, coffee) {
   score += 10
+  if (score !== parseInt(scoreText.text) + 10) score = (score < parseInt(scoreText.text) + 10) ? parseInt(scoreText.text) + 10 : score
+  coffeeCollected++
   scoreText.setText(score)
   coffee.destroy()
   gulp.play()
