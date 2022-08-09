@@ -64,11 +64,13 @@ const assets = {
     bgm: 'bgm',
     splash: 'splash',
     gulp: 'gulp',
-    success: 'success',
-    interface: {
-
-    }
+    success: 'success'
   }
+  // interface: {
+  //   button: {
+  //     testButton: 'testButton'
+  //   }
+  // }
 }
 
 const buttonTextStyle = {
@@ -154,7 +156,7 @@ function preload() {
 
   // #region Loading Assets
   this.load.spritesheet('player', 'js/assets/player.png', { frameWidth: 80, frameHeight: 24 })
-  this.load.spritesheet('blackBox', 'js/assets/blackbox.png', { frameWidth: 150, frameHeight: 50 })
+  this.load.spritesheet(assets.textButton, 'js/assets/blackbox.png', { frameWidth: 150, frameHeight: 50 })
   this.load.image(assets.tentacle.top, 'js/assets/tentacle.png')
   this.load.image(assets.tentacle.bottom, 'js/assets/tentacleInverse.png')
   this.load.image(assets.collectibles.coffee, 'js/assets/coffee.png')
@@ -216,16 +218,16 @@ function create() {
   upButton = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP) // eslint-disable-line
   this.input.on('pointerdown', movePlayer)
 
-  const buttonPlay = new uiWidgets.TextButton(this, -2, 1, 'blackBox', () => { startGame(game.scene.scenes[0]) }, this, 1, 0, 1, 0).setText('Play', buttonTextStyle).setDepth(30) // eslint-disable-line no-undef
-  const buttonLeaderboard = new uiWidgets.TextButton(this, -2, 1, 'blackBox', () => { }, this, 1, 0, 1, 0).setText('Leaderboard', buttonTextStyle).setDepth(30) // eslint-disable-line no-undef
+  const buttonPlay = new uiWidgets.TextButton(this, -2, 1, assets.textButton, () => { startGame(game.scene.scenes[0]) }, this, 1, 0, 1, 0).setText('Play', buttonTextStyle).setDepth(30) // eslint-disable-line no-undef
+  const buttonLeaderboard = new uiWidgets.TextButton(this, -2, 1, assets.textButton, () => { }, this, 1, 0, 1, 0).setText('Leaderboard', buttonTextStyle).setDepth(30) // eslint-disable-line no-undef
   menuScreenButtons.push(buttonPlay)
   menuScreenButtons.push(buttonLeaderboard)
   menuScreenButtonsColumn = new uiWidgets.Column(this, screenCenterWidth, screenCenterHeight + 50).setDepth(30) // eslint-disable-line no-undef
   menuScreenButtonsColumn.addNode(buttonPlay, 0, 10)
   menuScreenButtonsColumn.addNode(buttonLeaderboard, 0, 10)
 
-  const buttonRestart = new uiWidgets.TextButton(this, -2, 1, 'blackBox', () => { restartGame(); startGame(game.scene.scenes[0]) }, this, 1, 0, 1, 0).setText('Restart', buttonTextStyle).setDepth(30) // eslint-disable-line no-undef
-  const buttonLeaderboardDeath = new uiWidgets.TextButton(this, -2, 1, 'blackBox', () => { }, this, 1, 0, 1, 0).setText('Leaderboard', buttonTextStyle).setDepth(30) // eslint-disable-line no-undef
+  const buttonRestart = new uiWidgets.TextButton(this, -2, 1, assets.textButton, () => { restartGame(); startGame(game.scene.scenes[0]) }, this, 1, 0, 1, 0).setText('Restart', buttonTextStyle).setDepth(30) // eslint-disable-line no-undef
+  const buttonLeaderboardDeath = new uiWidgets.TextButton(this, -2, 1, assets.textButton, () => { }, this, 1, 0, 1, 0).setText('Leaderboard', buttonTextStyle).setDepth(30) // eslint-disable-line no-undef
   deathScreenButtons.push(buttonRestart)
   deathScreenButtons.push(buttonLeaderboardDeath)
   deathScreenButtons.forEach((button) => { button.visible = false })
@@ -362,7 +364,7 @@ function createCoffee() {
 
 function updateScore(_, gap) {
   score++
-  if (score !== parseInt(scoreText.text) + 1) score = (score < parseInt(scoreText.text) + 1) ? parseInt(scoreText.text) + 1 : score
+  if (score !== parseInt(scoreText.text) + 1) score = (score > parseInt(scoreText.text) + 1) ? parseInt(scoreText.text) + 1 : score
   tentaclesDodged++
   scoreText.setText(score)
   tentacleSpawnTimer.delay = Phaser.Math.Clamp(tentacleSpawnTimer.delay - score, 1500, 5000) // eslint-disable-line no-undef
@@ -390,7 +392,7 @@ function playerHit(player) {
 
 function onCoffeePickup(player, coffee) {
   score += 10
-  if (score !== parseInt(scoreText.text) + 10) score = (score < parseInt(scoreText.text) + 10) ? parseInt(scoreText.text) + 10 : score
+  if (score !== parseInt(scoreText.text) + 10) score = (score > parseInt(scoreText.text) + 10) ? parseInt(scoreText.text) + 10 : score
   coffeeCollected++
   scoreText.setText(score)
   coffee.destroy()
