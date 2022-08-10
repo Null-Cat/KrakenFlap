@@ -94,6 +94,7 @@ let scoreText
 let jumping = false
 let jumpTimer
 let tentacleSpawnTimer
+let speed
 
 let tentaclesGroup
 let gapsGroup
@@ -279,6 +280,7 @@ function prepareGame(scene) {
   coffeeQueued = 0
   coffeeCollected = 0
   tentaclesDodged = 0
+  speed = -100
   scoreText.setText(score)
   gameOver = false
 
@@ -321,7 +323,7 @@ function update() {
     if (child.x < -50) {
       child.destroy()
     } else {
-      child.setVelocityX(-100)
+      child.setVelocityX(speed)
     }
   })
 
@@ -331,11 +333,11 @@ function update() {
   }
 
   gapsGroup.children.iterate((child) => {
-    child.body.setVelocityX(-100)
+    child.body.setVelocityX(speed)
   })
 
   coffeeGroup.children.iterate((child) => {
-    child.body.setVelocityX(-100)
+    child.body.setVelocityX(speed)
   })
 }
 
@@ -403,7 +405,8 @@ function updateScore(_, gap) {
   if (score !== parseInt(scoreText.text) + 1) score = (score > parseInt(scoreText.text) + 1) ? parseInt(scoreText.text) + 1 : score
   tentaclesDodged++
   scoreText.setText(score)
-  tentacleSpawnTimer.delay = Phaser.Math.Clamp(tentacleSpawnTimer.delay - score, 1500, 5000) // eslint-disable-line no-undef
+  speed = Phaser.Math.Clamp(speed - 2, -200, 0) // eslint-disable-line no-undef
+  tentacleSpawnTimer.delay = Phaser.Math.Clamp(tentacleSpawnTimer.delay - 40, 1000, 5000) // eslint-disable-line no-undef
   gap.destroy()
   success.play()
   if (Phaser.Math.Between(0, 100) >= 95) coffeeQueued++ // eslint-disable-line no-undef
