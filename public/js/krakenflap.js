@@ -65,16 +65,23 @@ const assets = {
     splash: 'splash',
     gulp: 'gulp',
     success: 'success'
+  },
+  interface: {
+    leaderboard: {
+      gold: 'gold',
+      silver: 'silver',
+      bronze: 'bronze',
+      transparent: 'transparent'
+    }
   }
-  // interface: {
-  //   button: {
-  //     testButton: 'testButton'
-  //   }
-  // }
 }
 
 const buttonTextStyle = {
   font: '19px kenney_mini_square_regular',
+  fill: '#ffffff'
+}
+const leaderboardTextStyle = {
+  font: '26px kenney_mini_square_regular',
   fill: '#ffffff'
 }
 
@@ -107,6 +114,10 @@ const deathScreenButtons = []
 let deathScreenButtonsColumn
 const menuScreenButtons = []
 let menuScreenButtonsColumn
+
+let globalLeaderboardTitle
+let globalLeaderboardTopPlayers = []
+let globalLeaderboardTopPlayersColumn
 
 let bgm
 let gulp
@@ -163,6 +174,10 @@ function preload() {
   this.load.image('underwaterBg', 'js/assets/underwaterbg.png')
   this.load.image('title', 'js/assets/KrakenFlapWhite.png')
   this.load.image('gameOver', 'js/assets/GameOver.png')
+  this.load.image(assets.interface.leaderboard.gold, 'js/assets/gold.png')
+  this.load.image(assets.interface.leaderboard.silver, 'js/assets/silver.png')
+  this.load.image(assets.interface.leaderboard.bronze, 'js/assets/bronze.png')
+  this.load.image(assets.interface.leaderboard.transparent, 'js/assets/transparent.png')
 
   this.load.audio(assets.audio.bgm, 'js/assets/bgm.mp3')
   this.load.audio(assets.audio.splash, 'js/assets/splash.wav')
@@ -219,7 +234,7 @@ function create() {
   this.input.on('pointerdown', movePlayer)
 
   const buttonPlay = new uiWidgets.TextButton(this, -2, 1, assets.textButton, () => { startGame(game.scene.scenes[0]) }, this, 1, 0, 1, 0).setText('Play', buttonTextStyle).setDepth(30) // eslint-disable-line no-undef
-  const buttonLeaderboard = new uiWidgets.TextButton(this, -2, 1, assets.textButton, () => { }, this, 1, 0, 1, 0).setText('Leaderboard', buttonTextStyle).setDepth(30) // eslint-disable-line no-undef
+  const buttonLeaderboard = new uiWidgets.TextButton(this, -2, 1, assets.textButton, () => { showGlobalLeaderboard() }, this, 1, 0, 1, 0).setText('Leaderboard', buttonTextStyle).setDepth(30) // eslint-disable-line no-undef
   menuScreenButtons.push(buttonPlay)
   menuScreenButtons.push(buttonLeaderboard)
   menuScreenButtonsColumn = new uiWidgets.Column(this, screenCenterWidth, screenCenterHeight + 50).setDepth(30) // eslint-disable-line no-undef
@@ -227,13 +242,34 @@ function create() {
   menuScreenButtonsColumn.addNode(buttonLeaderboard, 0, 10)
 
   const buttonRestart = new uiWidgets.TextButton(this, -2, 1, assets.textButton, () => { restartGame(); startGame(game.scene.scenes[0]) }, this, 1, 0, 1, 0).setText('Restart', buttonTextStyle).setDepth(30) // eslint-disable-line no-undef
-  const buttonLeaderboardDeath = new uiWidgets.TextButton(this, -2, 1, assets.textButton, () => { }, this, 1, 0, 1, 0).setText('Leaderboard', buttonTextStyle).setDepth(30) // eslint-disable-line no-undef
+  const buttonLeaderboardDeath = new uiWidgets.TextButton(this, -2, 1, assets.textButton, () => { showGlobalLeaderboard() }, this, 1, 0, 1, 0).setText('Leaderboard', buttonTextStyle).setDepth(30) // eslint-disable-line no-undef
   deathScreenButtons.push(buttonRestart)
   deathScreenButtons.push(buttonLeaderboardDeath)
   deathScreenButtons.forEach((button) => { button.visible = false })
   deathScreenButtonsColumn = new uiWidgets.Column(this, screenCenterWidth, screenCenterHeight + 100).setDepth(30) // eslint-disable-line no-undef
   deathScreenButtonsColumn.addNode(buttonRestart, 0, 10)
   deathScreenButtonsColumn.addNode(buttonLeaderboardDeath, 0, 10)
+
+  globalLeaderboardTitle = this.add.text(screenCenterWidth + 7, screenCenterHeight - 200, 'Global Leaderboard', {
+    font: '42px kenney_mini_square_regular',
+    fill: '#ffffff',
+    align: 'center'
+  }).setOrigin(0.5).setDepth(30)
+  globalLeaderboardTitle.visible = false
+  const firstPlaceText = new uiWidgets.TextSprite(this, -2, 1, assets.interface.leaderboard.gold).setText('#1') // eslint-disable-line no-undef
+  const secondPlaceText = new uiWidgets.TextSprite(this, -2, 1, assets.interface.leaderboard.silver).setText('#2') // eslint-disable-line no-undef
+  const thirdPlaceText = new uiWidgets.TextSprite(this, -2, 1, assets.interface.leaderboard.bronze).setText('#3') // eslint-disable-line no-undef
+  const fourthAndFifthPlaceText = []
+  for (let i = 0; i < 2; i++) {
+    fourthAndFifthPlaceText.push(new uiWidgets.TextSprite(this, -2, 1, assets.interface.leaderboard.transparent).setText(`#${i + 4}`)) // eslint-disable-line no-undef
+  }
+  globalLeaderboardTopPlayers = [firstPlaceText, secondPlaceText, thirdPlaceText, ...fourthAndFifthPlaceText]
+  globalLeaderboardTopPlayers.forEach((player) => { player.visible = false })
+  globalLeaderboardTopPlayersColumn = new uiWidgets.Column(this, screenCenterWidth, screenCenterHeight - 125).setDepth(30) // eslint-disable-line no-undef
+  globalLeaderboardTopPlayersColumn.addNode(firstPlaceText, 0, 10)
+  globalLeaderboardTopPlayersColumn.addNode(secondPlaceText, 0, 10)
+  globalLeaderboardTopPlayersColumn.addNode(thirdPlaceText, 0, 10)
+  fourthAndFifthPlaceText.forEach((player) => { globalLeaderboardTopPlayersColumn.addNode(player, 0, 10) })
 
   cursors = this.input.keyboard.createCursorKeys()
 }
@@ -414,6 +450,15 @@ function showHighScore() {
   deathScreenButtons.forEach((button) => { button.visible = true })
 }
 
-// function showGlobalLeaderboard() {
-//   deathScreenButtons.forEach(button => button.visible = false)
-// }
+function showGlobalLeaderboard() {
+  deathScreenButtons.forEach((button) => { button.visible = false })
+  menuScreenButtons.forEach((button) => { button.visible = false })
+  if (highScoreText) highScoreText.visible = false
+  gameOverBanner.visible = false
+  title.visible = false
+  player.destroy()
+
+  globalLeaderboardTitle.visible = true
+  globalLeaderboardTopPlayers.forEach((player) => { player.visible = true })
+  globalLeaderboardTopPlayers.forEach((player) => { player.setText(`${player.text.text} John`, leaderboardTextStyle) })
+}
