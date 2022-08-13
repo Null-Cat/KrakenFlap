@@ -71,7 +71,8 @@ const assets = {
     interface: {
       bong: 'bong',
       click: 'click'
-    }
+    },
+    death: 'death'
   },
   interface: {
     leaderboard: {
@@ -249,6 +250,7 @@ function preload() {
   this.load.audio(assets.audio.success, 'js/assets/success.mp3')
   this.load.audio(assets.audio.interface.bong, 'js/assets/interfaceAudio/bong_001.ogg')
   this.load.audio(assets.audio.interface.click, 'js/assets/interfaceAudio/click_001.ogg')
+  this.load.audio(assets.audio.death, 'js/assets/death.ogg')
   // #endregion
 }
 
@@ -271,6 +273,7 @@ function create() {
 
   bong = this.sound.add(assets.audio.interface.bong, { loop: false })
   click = this.sound.add(assets.audio.interface.click, { loop: false })
+  death = this.sound.add(assets.audio.death, { loop: false })
 
   this.anims.create({
     key: 'swim',
@@ -802,6 +805,7 @@ function playerHit(player) {
   gameStarted = false
 
   player.anims.play('swim stop')
+  death.play()
 
   scoreText.visible = false
   if (score > highScore) {
