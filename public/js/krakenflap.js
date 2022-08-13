@@ -109,6 +109,8 @@ let player
 let score = 0
 let highScore = 0
 let highScoreText
+let newHighScoreText
+let newHighScoreTextTimer
 let scoreText
 
 let jumping = false
@@ -876,6 +878,26 @@ function showHighScore() {
     repeat: 0,
     yoyo: false
   })
+
+  newHighScoreText = game.scene.scenes[0].add
+    .text(screenCenterWidth, 165, 'New Highscore!', {
+      font: '32px kenney_mini_square_regular',
+      fill: '#ffffff',
+      align: 'center'
+    })
+    .setOrigin(0.5)
+  newHighScoreText.setDepth(30)
+  if (highScore > score) {
+    if (newHighScoreTextTimer) newHighScoreTextTimer.destroy()
+    newHighScoreTextTimer = game.scene.scenes[0].time.addEvent({
+      delay: 1000,
+      callback: () => {
+        newHighScoreText.visible = !newHighScoreText.visible
+      },
+      callbackScope: this,
+      loop: true
+    })
+  }
 }
 
 function showGlobalLeaderboard() {
@@ -921,6 +943,8 @@ function hideUIElements() {
     button.visible = false
   })
   if (highScoreText) highScoreText.visible = false
+  if (newHighScoreTextTimer) newHighScoreTextTimer.destroy()
+  if (newHighScoreText) newHighScoreText.visible = false
   gameOverBanner.visible = false
   title.visible = false
   kraken.visible = false
