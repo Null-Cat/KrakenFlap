@@ -825,7 +825,7 @@ function onWorldBounds(collider) {
 function showHighScore() {
   gameOverBanner.visible = true
   highScoreText = game.scene.scenes[0].add
-    .text(screenCenterWidth, 230, `High Score: ${highScore}\nCurrent Score: ${score}\nGlobal Ranking: ERR`, {
+    .text(screenCenterWidth, 230, `High Score: ${highScore}\nCurrent Score: ${score}\nGlobal Ranking: WIP`, {
       font: '32px kenney_mini_square_regular',
       fill: '#ffffff',
       align: 'center'
@@ -854,7 +854,7 @@ function showGlobalLeaderboard() {
     player.visible = true
   })
   globalLeaderboardTopPlayers.forEach((player) => {
-    player.setText(`${player.text.text} ERR`, leaderboardTextStyle)
+    player.setText(`${player.text.text} WIP`, leaderboardTextStyle)
   })
   globalLeaderboardBackButton.visible = true
 }
