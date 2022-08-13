@@ -91,7 +91,8 @@ const assets = {
         filled: 'filled',
         empty: 'empty'
       }
-    }
+    },
+    kraken: 'kraken'
   }
 }
 
@@ -130,6 +131,7 @@ let background
 let upButton
 let cursors // eslint-disable-line
 
+let kraken
 const deathScreenButtons = []
 let deathScreenButtonsColumn
 const menuScreenButtons = []
@@ -144,10 +146,12 @@ const settingsTexts = []
 const settingsButtons = []
 
 let fromMenu
+let contrast
 
 let bgm
 let gulp
 let success
+let death
 
 let bong
 let click
@@ -243,6 +247,8 @@ function preload() {
   this.load.image(assets.interface.leaderboard.transparent, 'js/assets/transparent.png')
   this.load.image(assets.interface.button.settingsButton.filled, 'js/assets/settingsButtonFilled.png')
   this.load.image(assets.interface.button.settingsButton.empty, 'js/assets/settingsButtonEmpty.png')
+  this.load.image(assets.interface.kraken, 'js/assets/kraken.png')
+  this.load.image('uiContrast', 'js/assets/uiContrast.png')
 
   this.load.audio(assets.audio.bgm, 'js/assets/bgm.mp3')
   this.load.audio(assets.audio.splash, 'js/assets/splash.wav')
@@ -385,6 +391,8 @@ function create() {
   menuScreenButtonsRow.addNode(buttonLeaderboard, 0, 0)
   menuScreenButtonsRow.addNode(buttonSettings, 19, 0)
 
+  kraken = this.add.image(512, 0, assets.interface.kraken).setDepth(25).setOrigin(1, 0)
+  kraken.visible = false
   // eslint-disable-next-line no-undef
   const buttonRestart = new uiWidgets.TextButton(
     this,
@@ -637,6 +645,10 @@ function create() {
     text.visible = false
   })
 
+  contrast = this.add.image(0, 0, 'uiContrast').setDepth(29).setOrigin(0, 0)
+  contrast.alpha = 0.45
+  contrast.visible = false
+
   cursors = this.input.keyboard.createCursorKeys()
 }
 
@@ -735,8 +747,7 @@ function restartGame() {
   tentaclesGroup.clear(true, true)
   gapsGroup.clear(true, true)
   coffeeGroup.clear(true, true)
-  title.visible = true
-  highScoreText.visible = false
+  hideUIElements()
   player.destroy()
 
   prepareGame(game.scene.scenes[0])
@@ -832,7 +843,7 @@ function onWorldBounds(collider) {
 function showHighScore() {
   gameOverBanner.visible = true
   highScoreText = game.scene.scenes[0].add
-    .text(screenCenterWidth, 230, `High Score: ${highScore}\nCurrent Score: ${score}\nGlobal Ranking: WIP`, {
+    .text(screenCenterWidth, 230, `High Score: ${highScore}\nCurrent Score: ${score}\nLeaderboard Ranking: WIP`, {
       font: '32px kenney_mini_square_regular',
       fill: '#ffffff',
       align: 'center'
@@ -842,6 +853,28 @@ function showHighScore() {
   highScoreText.visible = true
   deathScreenButtons.forEach((button) => {
     button.visible = true
+  })
+
+  kraken.visible = true
+  kraken.x = 796
+  game.scene.scenes[0].tweens.add({
+    targets: kraken,
+    x: 515,
+    ease: 'Power3',
+    duration: 2000,
+    repeat: 0,
+    yoyo: false
+  })
+
+  contrast.visible = true
+  contrast.alpha = 0
+  game.scene.scenes[0].tweens.add({
+    targets: contrast,
+    alpha: 0.45,
+    ease: 'Power3',
+    duration: 2000,
+    repeat: 0,
+    yoyo: false
   })
 }
 
@@ -890,4 +923,6 @@ function hideUIElements() {
   if (highScoreText) highScoreText.visible = false
   gameOverBanner.visible = false
   title.visible = false
+  kraken.visible = false
+  contrast.visible = false
 }
