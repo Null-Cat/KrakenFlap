@@ -296,6 +296,19 @@ function create() {
     frameRate: 10
   })
 
+  this.anims.create({
+    key: 'tentacleTopp',
+    frames: this.anims.generateFrameNumbers('tentacleTop'),
+    frameRate: 12,
+    repeat: -1
+  })
+  this.anims.create({
+    key: 'tentacleBottomm',
+    frames: this.anims.generateFrameNumbers(assets.tentacle.bottom),
+    frameRate: 12,
+    repeat: -1
+  })
+
   gapsGroup = this.physics.add.group()
   tentaclesGroup = this.physics.add.group()
   coffeeGroup = this.physics.add.group()
@@ -303,6 +316,16 @@ function create() {
   title = this.add.image(screenCenterWidth, 156, 'title')
   title.setDepth(30)
   title.visible = true
+
+  // this.tweens.add({
+  //   targets: title,
+  //   y: title.y - 40,
+  //   ease: 'Stepped',
+  //   easeParams: [4],
+  //   duration: 3000,
+  //   repeat: -1,
+  //   yoyo: true
+  // })
 
   gameOverBanner = this.add.image(screenCenterWidth, 110, 'gameOver')
   gameOverBanner.setDepth(30)
@@ -358,6 +381,8 @@ function create() {
       click.play()
       fromMenu = true
       showGlobalLeaderboard()
+      contrast.visible = true
+      contrast.alpha = 0.45
     },
     this,
     1,
@@ -378,6 +403,8 @@ function create() {
     () => {
       click.play()
       showSettings()
+      contrast.visible = true
+      contrast.alpha = 0.45
       fromMenu = true
     },
     this,
@@ -470,6 +497,7 @@ function create() {
       globalLeaderboardTopPlayers.forEach((player) => {
         player.visible = false
       })
+      contrast.visible = false
       fromMenu ? showMainMenu() : showHighScore()
     },
     this,
@@ -610,6 +638,14 @@ function create() {
     })
     .setOrigin(0.5)
     .setDepth(30)
+  const credits = this.add
+    .text(screenCenterWidth, 400, 'Programming: Philip White  Art: Joshua White', {
+      font: '12px kenney_mini_square_regular',
+      fill: '#ffffff',
+      align: 'center'
+    })
+    .setOrigin(0.5)
+    .setDepth(30)
   const settingsBackButton = new uiWidgets.TextButton( // eslint-disable-line no-undef
     this,
     -2,
@@ -623,6 +659,7 @@ function create() {
       settingsButtons.forEach((button) => {
         button.visible = false
       })
+      contrast.visible = false
       fromMenu ? showMainMenu() : showHighScore()
     },
     this,
@@ -639,7 +676,7 @@ function create() {
   const backButtonSettingsColumn = new uiWidgets.Column(this, screenCenterWidth, 450).setDepth(30) // eslint-disable-line no-undef
   backButtonSettingsColumn.addNode(settingsBackButton, 0, 0)
   settingsBackButton.visible = false
-  settingsTexts.push(settingsTitle, settingsOptionTextBGM, settingsOptionTextSFX)
+  settingsTexts.push(settingsTitle, settingsOptionTextBGM, settingsOptionTextSFX, credits)
   settingsButtons.push(settingsButtonBGMFilled, settingsButtonBGMEmpty, settingsButtonSFXFilled, settingsButtonSFXEmpty, settingsBackButton)
   settingsButtons.forEach((button) => {
     button.visible = false
@@ -805,11 +842,13 @@ function createTentacles(scene = game.scene.scenes[0]) {
 
   const tentacleTop = tentaclesGroup.create(tentacleXSpawn, tentacleTopY, assets.tentacle.top)
   tentacleTop.body.allowGravity = false
-  tentacleTop.setSize(tentacleTop.width - 30, tentacleTop.height, true).setOffset(25, 0)
+  tentacleTop.anims.play('tentacleTopp', true)
+  tentacleTop.setSize(tentacleTop.width - 30, tentacleTop.height, true).setOffset(0, 0)
 
   const tentacleBottom = tentaclesGroup.create(tentacleXSpawn, tentacleTopY + 420, assets.tentacle.bottom)
   tentacleBottom.body.allowGravity = false
-  tentacleBottom.setSize(tentacleTop.width - 30, tentacleTop.height, true).setOffset(0, 0)
+  tentacleBottom.anims.play('tentacleBottomm', true)
+  tentacleBottom.setSize(tentacleTop.width - 30, tentacleTop.height, true).setOffset(25, 0)
 }
 
 function createCoffee() {
