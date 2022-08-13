@@ -390,6 +390,9 @@ function create() {
     assets.textButton,
     () => {
       click.play()
+      deathScreenButtons.forEach((button) => {
+        button.visible = false
+      })
       restartGame()
       startGame(game.scene.scenes[0])
     },
@@ -399,21 +402,20 @@ function create() {
     1,
     0
   )
-    .setText('Restart', buttonTextStyle)
+    .setText('Play Again', buttonTextStyle)
     .setDepth(30)
   buttonRestart.button.on('pointerover', () => {
     bong.play()
   })
-  // eslint-disable-next-line no-undef
-  const buttonLeaderboardDeath = new uiWidgets.TextButton(
+  const buttonMainMenuDeath = new uiWidgets.TextButton( // eslint-disable-line no-undef
     this,
     -2,
     1,
     assets.textButton,
     () => {
       click.play()
-      fromMenu = false
-      showGlobalLeaderboard()
+      restartGame()
+      showMainMenu()
     },
     this,
     1,
@@ -421,18 +423,18 @@ function create() {
     1,
     0
   )
-    .setText('Leaderboard', buttonTextStyle)
+    .setText('Main Menu', buttonTextStyle)
     .setDepth(30)
-  buttonLeaderboardDeath.button.on('pointerover', () => {
+  buttonMainMenuDeath.button.on('pointerover', () => {
     bong.play()
   })
-  deathScreenButtons.push(buttonRestart, buttonLeaderboardDeath)
+  deathScreenButtons.push(buttonRestart, buttonMainMenuDeath)
   deathScreenButtons.forEach((button) => {
     button.visible = false
   })
   deathScreenButtonsColumn = new uiWidgets.Column(this, screenCenterWidth, screenCenterHeight + 100).setDepth(30) // eslint-disable-line no-undef
   deathScreenButtonsColumn.addNode(buttonRestart, 0, 10)
-  deathScreenButtonsColumn.addNode(buttonLeaderboardDeath, 0, 10)
+  deathScreenButtonsColumn.addNode(buttonMainMenuDeath, 0, 10)
 
   globalLeaderboardTitle = this.add
     .text(screenCenterWidth + 7, screenCenterHeight - 200, 'Leaderboard', {
@@ -515,7 +517,7 @@ function create() {
     0,
     0
   ).setDepth(30)
-  buttonLeaderboardDeath.button.on('pointerover', () => {
+  settingsButtonBGMFilled.button.on('pointerover', () => {
     bong.play()
   })
   const settingsButtonBGMEmpty = new uiWidgets.TextButton( // eslint-disable-line no-undef
@@ -535,7 +537,7 @@ function create() {
     0,
     0
   ).setDepth(30)
-  buttonLeaderboardDeath.button.on('pointerover', () => {
+  settingsButtonBGMEmpty.button.on('pointerover', () => {
     bong.play()
   })
   const settingsButtonSFXFilled = new uiWidgets.TextButton( // eslint-disable-line no-undef
@@ -555,7 +557,7 @@ function create() {
     0,
     0
   ).setDepth(30)
-  buttonLeaderboardDeath.button.on('pointerover', () => {
+  settingsButtonSFXFilled.button.on('pointerover', () => {
     bong.play()
   })
   const settingsButtonSFXEmpty = new uiWidgets.TextButton( // eslint-disable-line no-undef
@@ -575,7 +577,7 @@ function create() {
     0,
     0
   ).setDepth(30)
-  buttonLeaderboardDeath.button.on('pointerover', () => {
+  settingsButtonSFXFilled.button.on('pointerover', () => {
     bong.play()
   })
   const settingsOptionTextBGM = this.add
@@ -601,7 +603,9 @@ function create() {
     assets.textButton,
     () => {
       click.play()
-      settingsTexts.forEach((text) => { text.visible = false })
+      settingsTexts.forEach((text) => {
+        text.visible = false
+      })
       settingsButtons.forEach((button) => {
         button.visible = false
       })
@@ -626,7 +630,9 @@ function create() {
   settingsButtons.forEach((button) => {
     button.visible = false
   })
-  settingsTexts.forEach((text) => { text.visible = false })
+  settingsTexts.forEach((text) => {
+    text.visible = false
+  })
 
   cursors = this.input.keyboard.createCursorKeys()
 }
@@ -729,9 +735,6 @@ function restartGame() {
   title.visible = true
   highScoreText.visible = false
   player.destroy()
-  deathScreenButtons.forEach((button) => {
-    button.visible = false
-  })
 
   prepareGame(game.scene.scenes[0])
   game.scene.scenes[0].physics.resume()
@@ -839,15 +842,7 @@ function showHighScore() {
 }
 
 function showGlobalLeaderboard() {
-  deathScreenButtons.forEach((button) => {
-    button.visible = false
-  })
-  menuScreenButtons.forEach((button) => {
-    button.visible = false
-  })
-  if (highScoreText) highScoreText.visible = false
-  gameOverBanner.visible = false
-  title.visible = false
+  hideUIElements()
 
   globalLeaderboardTitle.visible = true
   globalLeaderboardTopPlayers.forEach((player) => {
@@ -860,6 +855,8 @@ function showGlobalLeaderboard() {
 }
 
 function showMainMenu() {
+  hideUIElements()
+
   title.visible = true
   menuScreenButtons.forEach((button) => {
     button.visible = true
@@ -867,6 +864,19 @@ function showMainMenu() {
 }
 
 function showSettings() {
+  hideUIElements()
+
+  settingsTexts.forEach((text) => {
+    text.visible = true
+  })
+  settingsButtons[0].visible = bgm.isPlaying
+  settingsButtons[1].visible = !bgm.isPlaying
+  settingsButtons[2].visible = toggleSFX
+  settingsButtons[3].visible = !toggleSFX
+  settingsButtons[4].visible = true
+}
+
+function hideUIElements() {
   deathScreenButtons.forEach((button) => {
     button.visible = false
   })
@@ -876,11 +886,4 @@ function showSettings() {
   if (highScoreText) highScoreText.visible = false
   gameOverBanner.visible = false
   title.visible = false
-
-  settingsTexts.forEach((text) => { text.visible = true })
-  settingsButtons[0].visible = bgm.isPlaying
-  settingsButtons[1].visible = !bgm.isPlaying
-  settingsButtons[2].visible = toggleSFX
-  settingsButtons[3].visible = !toggleSFX
-  settingsButtons[4].visible = true
 }
