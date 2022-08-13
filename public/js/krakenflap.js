@@ -237,8 +237,9 @@ function preload() {
     frameWidth: 65,
     frameHeight: 50
   })
-  this.load.image(assets.tentacle.top, 'js/assets/tentacle.png')
-  this.load.image(assets.tentacle.bottom, 'js/assets/tentacleInverse.png')
+  this.load.spritesheet(assets.tentacle.top, 'js/assets/tentacle.png', { frameWidth: 52, frameHeight: 320 })
+  this.load.spritesheet(assets.tentacle.bottom, 'js/assets/tentacleInverse.png', { frameWidth: 52, frameHeight: 320 })
+
   this.load.image(assets.collectibles.coffee, 'js/assets/coffee.png')
   this.load.image('underwaterBg', 'js/assets/underwaterBG.png')
   this.load.image('title', 'js/assets/KrakenFlapWhite.png')
@@ -651,6 +652,25 @@ function create() {
   contrast.alpha = 0.45
   contrast.visible = false
 
+  newHighScoreText = this.add
+    .text(screenCenterWidth, 165, 'New Highscore!', {
+      font: '32px kenney_mini_square_regular',
+      fill: '#ffffff',
+      align: 'center'
+    })
+    .setOrigin(0.5)
+    .setDepth(30)
+  newHighScoreText.visible = false
+  highScoreText = game.scene.scenes[0].add
+    .text(screenCenterWidth, 230, `High Score: ${highScore}\nCurrent Score: ${score}\nLeaderboard Ranking: WIP`, {
+      font: '32px kenney_mini_square_regular',
+      fill: '#ffffff',
+      align: 'center'
+    })
+    .setOrigin(0.5)
+  highScoreText.setDepth(30)
+  highScoreText.visible = false
+
   cursors = this.input.keyboard.createCursorKeys()
 }
 
@@ -823,9 +843,10 @@ function playerHit(player) {
   scoreText.visible = false
   if (score > highScore) {
     highScore = score
+    showHighScore(true)
+  } else {
+    showHighScore()
   }
-  if (highScoreText) highScoreText.destroy()
-  showHighScore()
   tentacleSpawnTimer.paused = true
 }
 
@@ -842,17 +863,11 @@ function onWorldBounds(collider) {
   playerHit(player)
 }
 
-function showHighScore() {
+function showHighScore(newHighScore = false) {
   gameOverBanner.visible = true
-  highScoreText = game.scene.scenes[0].add
-    .text(screenCenterWidth, 230, `High Score: ${highScore}\nCurrent Score: ${score}\nLeaderboard Ranking: WIP`, {
-      font: '32px kenney_mini_square_regular',
-      fill: '#ffffff',
-      align: 'center'
-    })
-    .setOrigin(0.5)
-  highScoreText.setDepth(30)
   highScoreText.visible = true
+  highScoreText.setText(`High Score: ${highScore}\nCurrent Score: ${score}\nLeaderboard Ranking: WIP`)
+
   deathScreenButtons.forEach((button) => {
     button.visible = true
   })
@@ -879,15 +894,7 @@ function showHighScore() {
     yoyo: false
   })
 
-  newHighScoreText = game.scene.scenes[0].add
-    .text(screenCenterWidth, 165, 'New Highscore!', {
-      font: '32px kenney_mini_square_regular',
-      fill: '#ffffff',
-      align: 'center'
-    })
-    .setOrigin(0.5)
-  newHighScoreText.setDepth(30)
-  if (highScore > score) {
+  if (newHighScore) {
     if (newHighScoreTextTimer) newHighScoreTextTimer.destroy()
     newHighScoreTextTimer = game.scene.scenes[0].time.addEvent({
       delay: 1000,
@@ -942,9 +949,9 @@ function hideUIElements() {
   menuScreenButtons.forEach((button) => {
     button.visible = false
   })
-  if (highScoreText) highScoreText.visible = false
   if (newHighScoreTextTimer) newHighScoreTextTimer.destroy()
-  if (newHighScoreText) newHighScoreText.visible = false
+  highScoreText.visible = false
+  newHighScoreText.visible = false
   gameOverBanner.visible = false
   title.visible = false
   kraken.visible = false
