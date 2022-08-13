@@ -233,7 +233,7 @@ function preload() {
   this.load.image(assets.tentacle.top, 'js/assets/tentacle.png')
   this.load.image(assets.tentacle.bottom, 'js/assets/tentacleInverse.png')
   this.load.image(assets.collectibles.coffee, 'js/assets/coffee.png')
-  this.load.image('underwaterBg', 'js/assets/underwaterbg.png')
+  this.load.image('underwaterBg', 'js/assets/underwaterBG.png')
   this.load.image('title', 'js/assets/KrakenFlapWhite.png')
   this.load.image('gameOver', 'js/assets/GameOver.png')
   this.load.image(assets.interface.leaderboard.gold, 'js/assets/gold.png')
@@ -296,7 +296,7 @@ function create() {
   gameOverBanner.setDepth(30)
   gameOverBanner.visible = false
 
-  background = this.add.tileSprite(800, 300, 1600, 600, 'underwaterBg')
+  background = this.add.tileSprite(800, 256, 1600, 512, 'underwaterBg')
 
   scoreText = this.add
     .text(screenCenterWidth, 120, '0', {
