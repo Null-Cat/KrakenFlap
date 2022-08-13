@@ -313,19 +313,18 @@ function create() {
   tentaclesGroup = this.physics.add.group()
   coffeeGroup = this.physics.add.group()
 
-  title = this.add.image(screenCenterWidth, 156, 'title')
+  title = this.add.image(screenCenterWidth, 0, 'title')
   title.setDepth(30)
   title.visible = true
 
-  // this.tweens.add({
-  //   targets: title,
-  //   y: title.y - 40,
-  //   ease: 'Stepped',
-  //   easeParams: [4],
-  //   duration: 3000,
-  //   repeat: -1,
-  //   yoyo: true
-  // })
+  this.tweens.add({
+    targets: title,
+    y: title.y + 150,
+    ease: 'Bounce',
+    duration: 1500,
+    repeat: 0,
+    yoyo: false
+  })
 
   gameOverBanner = this.add.image(screenCenterWidth, 110, 'gameOver')
   gameOverBanner.setDepth(30)
