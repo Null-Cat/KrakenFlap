@@ -257,9 +257,9 @@ function preload() {
   this.load.audio(assets.audio.splash, 'js/assets/splash.wav')
   this.load.audio(assets.audio.gulp, 'js/assets/gulp.wav')
   this.load.audio(assets.audio.success, 'js/assets/success.mp3')
-  this.load.audio(assets.audio.interface.bong, 'js/assets/interfaceAudio/bong_001.ogg')
-  this.load.audio(assets.audio.interface.click, 'js/assets/interfaceAudio/click_001.ogg')
-  this.load.audio(assets.audio.death, 'js/assets/death.ogg')
+  this.load.audio(assets.audio.interface.bong, 'js/assets/bong_001.mp3')
+  this.load.audio(assets.audio.interface.click, 'js/assets/click_001.mp3')
+  this.load.audio(assets.audio.death, 'js/assets/death.mp3')
   // #endregion
 }
 
