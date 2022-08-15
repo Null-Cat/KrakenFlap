@@ -309,7 +309,7 @@ function create() {
     key: 'tentacleBottomm',
     frames: this.anims.generateFrameNumbers(assets.tentacle.bottom),
     frameRate: 12,
-    repeat: -1, 
+    repeat: -1,
     yoyo: true
   })
 
@@ -753,7 +753,7 @@ function prepareGame(scene) {
   gameOver = false
 
   player = scene.physics.add.sprite(60, 265, 'player')
-  player.setSize(25, 24, true)
+  player.setCircle(9, 35, 2)
   player.setCollideWorldBounds(true)
   player.anims.play('swim', true)
   player.body.allowGravity = false
@@ -872,19 +872,19 @@ function createTentacles(scene = game.scene.scenes[0]) {
   gap.body.allowGravity = false
   gap.visible = false
 
-  const tentacleTop = tentaclesGroup.create(tentacleXSpawn, tentacleTopY, assets.tentacle.top)
+  const tentacleTop = tentaclesGroup.create(tentacleXSpawn + 10, tentacleTopY, assets.tentacle.top)
   tentacleTop.body.allowGravity = false
   tentacleTop.anims.play('tentacleTopp', true)
-  tentacleTop.setSize(tentacleTop.width - 30, tentacleTop.height, true).setOffset(0, 0)
+  tentacleTop.setSize(tentacleTop.width - 30, tentacleTop.height, true).setOffset(5, 0)
 
-  const tentacleBottom = tentaclesGroup.create(tentacleXSpawn, tentacleTopY + 420, assets.tentacle.bottom)
+  const tentacleBottom = tentaclesGroup.create(tentacleXSpawn - 6, tentacleTopY + 420, assets.tentacle.bottom)
   tentacleBottom.body.allowGravity = false
   tentacleBottom.anims.play('tentacleBottomm', true)
-  tentacleBottom.setSize(tentacleTop.width - 30, tentacleTop.height, true).setOffset(25, 0)
+  tentacleBottom.setSize(tentacleTop.width - 30, tentacleTop.height, true).setOffset(22, 0)
 }
 
 function createCoffee() {
-  const coffeeXSpawn = 600
+  const coffeeXSpawn = 590
   const coffeeYSpawn = Phaser.Math.Between(-10, 200) // eslint-disable-line no-undef
   const coffee = coffeeGroup.create(coffeeXSpawn, coffeeYSpawn + 150, assets.collectibles.coffee)
   coffee.body.allowGravity = false
@@ -919,6 +919,8 @@ function playerHit(player) {
     showHighScore()
   }
   tentacleSpawnTimer.paused = true
+
+  // console.log(`${score} ${coffeeCollected * 10 + tentaclesDodged}`)
 }
 
 function onCoffeePickup(player, coffee) {
