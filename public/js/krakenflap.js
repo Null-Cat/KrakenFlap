@@ -302,13 +302,15 @@ function create() {
     key: 'tentacleTopp',
     frames: this.anims.generateFrameNumbers('tentacleTop'),
     frameRate: 12,
-    repeat: -1
+    repeat: -1,
+    yoyo: true
   })
   this.anims.create({
     key: 'tentacleBottomm',
     frames: this.anims.generateFrameNumbers(assets.tentacle.bottom),
     frameRate: 12,
-    repeat: -1
+    repeat: -1, 
+    yoyo: true
   })
 
   gapsGroup = this.physics.add.group()
