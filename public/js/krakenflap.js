@@ -941,8 +941,15 @@ function showHighScore(newHighScore = false) {
   highScoreText.visible = true
   highScoreText.setText(`High Score: ${highScore}\nCurrent Score: ${score}\nLeaderboard Ranking: WIP`)
 
-  deathScreenButtons.forEach((button) => {
-    button.visible = true
+  game.scene.scenes[0].time.addEvent({
+    delay: 300,
+    callback: () => {
+      deathScreenButtons.forEach((button) => {
+        button.visible = true
+      })
+    },
+    callbackScope: this,
+    loop: false
   })
 
   kraken.visible = true
