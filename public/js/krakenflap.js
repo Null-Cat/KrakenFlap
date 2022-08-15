@@ -92,7 +92,8 @@ const assets = {
         empty: 'empty'
       }
     },
-    kraken: 'kraken'
+    kraken: 'kraken',
+    krakenSplashScreen: 'krakenSplashScreen'
   }
 }
 
@@ -252,6 +253,7 @@ function preload() {
   this.load.image(assets.interface.button.settingsButton.empty, 'js/assets/settingsButtonEmpty.png')
   this.load.image(assets.interface.kraken, 'js/assets/kraken.png')
   this.load.image('uiContrast', 'js/assets/uiContrast.png')
+  this.load.image(assets.interface.krakenSplashScreen, 'js/assets/krakenSplashScreen.png')
 
   this.load.audio(assets.audio.bgm, 'js/assets/bgm.mp3')
   this.load.audio(assets.audio.splash, 'js/assets/splash.wav')
@@ -315,22 +317,14 @@ function create() {
 
   title = this.add.image(screenCenterWidth, 0, 'title')
   title.setDepth(30)
-  title.visible = true
-
-  this.tweens.add({
-    targets: title,
-    y: title.y + 150,
-    ease: 'Bounce',
-    duration: 1500,
-    repeat: 0,
-    yoyo: false
-  })
+  title.visible = false
 
   gameOverBanner = this.add.image(screenCenterWidth, 110, 'gameOver')
   gameOverBanner.setDepth(30)
   gameOverBanner.visible = false
 
   background = this.add.tileSprite(800, 256, 1600, 512, 'underwaterBg')
+  background.visible = false
 
   scoreText = this.add
     .text(screenCenterWidth, 120, '0', {
@@ -341,9 +335,6 @@ function create() {
     .setOrigin(0.5)
   scoreText.setDepth(30)
   scoreText.visible = false
-
-  bgm.play()
-  prepareGame(this)
 
   upButton = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP) // eslint-disable-line
   this.input.on('pointerdown', movePlayer)
@@ -419,6 +410,9 @@ function create() {
   menuScreenButtonsRow = new uiWidgets.Row(this, screenCenterWidth - 42, screenCenterHeight + 160).setDepth(30) // eslint-disable-line no-undef
   menuScreenButtonsRow.addNode(buttonLeaderboard, 0, 0)
   menuScreenButtonsRow.addNode(buttonSettings, 19, 0)
+  menuScreenButtons.forEach((button) => {
+    button.visible = false
+  })
 
   kraken = this.add.image(512, 0, assets.interface.kraken).setDepth(25).setOrigin(1, 0)
   kraken.visible = false
@@ -708,6 +702,43 @@ function create() {
   highScoreText.visible = false
 
   cursors = this.input.keyboard.createCursorKeys()
+
+  const splashScreen = this.add.image(0, 0, assets.interface.krakenSplashScreen).setOrigin(0.02, -0.03).setDepth(30)
+  splashScreen.alpha = 0
+  this.tweens.add({
+    targets: splashScreen,
+    alpha: 1,
+    duration: 1000,
+    ease: 'Linear',
+    onComplete: () => {
+      this.tweens.add({
+        targets: splashScreen,
+        alpha: 0,
+        duration: 1000,
+        delay: 1500,
+        ease: 'Linear',
+        onComplete: () => {
+          this.tweens.add({
+            targets: title,
+            y: title.y + 150,
+            ease: 'Bounce',
+            duration: 1500,
+            repeat: 0,
+            yoyo: false
+          })
+          background.visible = true
+          prepareGame(this)
+          showMainMenu()
+          bgm.play()
+          splashScreen.destroy()
+        },
+        repeat: 0,
+        yoyo: false
+      })
+    },
+    repeat: 0,
+    yoyo: false
+  })
 }
 
 function prepareGame(scene) {
