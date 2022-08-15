@@ -741,6 +741,10 @@ function create() {
     repeat: 0,
     yoyo: false
   })
+
+  window.onblur = () => {
+    playerHit(player)
+  }
 }
 
 function prepareGame(scene) {
@@ -904,6 +908,7 @@ function updateScore(_, gap) {
 }
 
 function playerHit(player) {
+  if (!gameStarted) return
   game.scene.scenes[0].physics.pause()
   gameOver = true
   gameStarted = false
