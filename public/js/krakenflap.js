@@ -683,7 +683,7 @@ function create() {
   contrast.visible = false
 
   newHighScoreText = this.add
-    .text(screenCenterWidth, 165, 'New Highscore!', {
+    .text(screenCenterWidth, 165, 'New High Score!', {
       font: '32px kenney_mini_square_regular',
       fill: '#ffffff',
       align: 'center'
