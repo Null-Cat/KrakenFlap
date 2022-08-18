@@ -5,17 +5,19 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>KrakenFlap</title>
-
-    <script src="//cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.min.js"></script>
-    <link rel="preload" as="font" href="js/assets/Kenney Mini Square.ttf" type="font/ttf" crossOrigin>
-    <link rel="stylesheet" href="/css/index.css" type="text/css">
 </head>
 
 <body>
-    <div id="krakenflap">
-        <script src="js/krakenflap.js" defer></script>
+    <div id="krakenflap" userid=00001>
+        <link rel="preload" as="font" href="js/assets/Kenney Mini Square.ttf" type="font/ttf" crossOrigin>
+        <style>
+            @font-face {
+                font-family: kenney_mini_square_regular;
+                src: url('../js/assets/Kenney\ Mini\ Square.ttf');
+            }
+        </style>
+        <script src="js/obs.js" defer></script>
     </div>
-
 </body>
 
 </html>
