@@ -1,3 +1,3 @@
-# KrakenFlap
+# The Kraken Summer Splash
 
-Kraken Rum Game for Giveaway 
+Kraken Game 

@@ -1,3 +1,501 @@
+/* javascript-obfuscator:disable */
+// #region CryptoJS
+/* eslint-disable */
+// prettier-ignore
+/*
+CryptoJS v3.1.2
+code.google.com/p/crypto-js
+(c) 2009-2013 by Jeff Mott. All rights reserved.
+code.google.com/p/crypto-js/wiki/License
+*/
+var CryptoJS=CryptoJS||function(u,p){var d={},l=d.lib={},s=function(){},t=l.Base={extend:function(a){s.prototype=this;var c=new s;a&&c.mixIn(a);c.hasOwnProperty("init")||(c.init=function(){c.$super.init.apply(this,arguments)});c.init.prototype=c;c.$super=this;return c},create:function(){var a=this.extend();a.init.apply(a,arguments);return a},init:function(){},mixIn:function(a){for(var c in a)a.hasOwnProperty(c)&&(this[c]=a[c]);a.hasOwnProperty("toString")&&(this.toString=a.toString)},clone:function(){return this.init.prototype.extend(this)}},
+r=l.WordArray=t.extend({init:function(a,c){a=this.words=a||[];this.sigBytes=c!=p?c:4*a.length},toString:function(a){return(a||v).stringify(this)},concat:function(a){var c=this.words,e=a.words,j=this.sigBytes;a=a.sigBytes;this.clamp();if(j%4)for(var k=0;k<a;k++)c[j+k>>>2]|=(e[k>>>2]>>>24-8*(k%4)&255)<<24-8*((j+k)%4);else if(65535<e.length)for(k=0;k<a;k+=4)c[j+k>>>2]=e[k>>>2];else c.push.apply(c,e);this.sigBytes+=a;return this},clamp:function(){var a=this.words,c=this.sigBytes;a[c>>>2]&=4294967295<<
+32-8*(c%4);a.length=u.ceil(c/4)},clone:function(){var a=t.clone.call(this);a.words=this.words.slice(0);return a},random:function(a){for(var c=[],e=0;e<a;e+=4)c.push(4294967296*u.random()|0);return new r.init(c,a)}}),w=d.enc={},v=w.Hex={stringify:function(a){var c=a.words;a=a.sigBytes;for(var e=[],j=0;j<a;j++){var k=c[j>>>2]>>>24-8*(j%4)&255;e.push((k>>>4).toString(16));e.push((k&15).toString(16))}return e.join("")},parse:function(a){for(var c=a.length,e=[],j=0;j<c;j+=2)e[j>>>3]|=parseInt(a.substr(j,
+2),16)<<24-4*(j%8);return new r.init(e,c/2)}},b=w.Latin1={stringify:function(a){var c=a.words;a=a.sigBytes;for(var e=[],j=0;j<a;j++)e.push(String.fromCharCode(c[j>>>2]>>>24-8*(j%4)&255));return e.join("")},parse:function(a){for(var c=a.length,e=[],j=0;j<c;j++)e[j>>>2]|=(a.charCodeAt(j)&255)<<24-8*(j%4);return new r.init(e,c)}},x=w.Utf8={stringify:function(a){try{return decodeURIComponent(escape(b.stringify(a)))}catch(c){throw Error("Malformed UTF-8 data");}},parse:function(a){return b.parse(unescape(encodeURIComponent(a)))}},
+q=l.BufferedBlockAlgorithm=t.extend({reset:function(){this._data=new r.init;this._nDataBytes=0},_append:function(a){"string"==typeof a&&(a=x.parse(a));this._data.concat(a);this._nDataBytes+=a.sigBytes},_process:function(a){var c=this._data,e=c.words,j=c.sigBytes,k=this.blockSize,b=j/(4*k),b=a?u.ceil(b):u.max((b|0)-this._minBufferSize,0);a=b*k;j=u.min(4*a,j);if(a){for(var q=0;q<a;q+=k)this._doProcessBlock(e,q);q=e.splice(0,a);c.sigBytes-=j}return new r.init(q,j)},clone:function(){var a=t.clone.call(this);
+a._data=this._data.clone();return a},_minBufferSize:0});l.Hasher=q.extend({cfg:t.extend(),init:function(a){this.cfg=this.cfg.extend(a);this.reset()},reset:function(){q.reset.call(this);this._doReset()},update:function(a){this._append(a);this._process();return this},finalize:function(a){a&&this._append(a);return this._doFinalize()},blockSize:16,_createHelper:function(a){return function(b,e){return(new a.init(e)).finalize(b)}},_createHmacHelper:function(a){return function(b,e){return(new n.HMAC.init(a,
+e)).finalize(b)}}});var n=d.algo={};return d}(Math);
+;(function () {
+  var u = CryptoJS,
+    p = u.lib.WordArray
+  u.enc.Base64 = {
+    stringify: function (d) {
+      var l = d.words,
+        p = d.sigBytes,
+        t = this._map
+      d.clamp()
+      d = []
+      for (var r = 0; r < p; r += 3)
+        for (
+          var w = (((l[r >>> 2] >>> (24 - 8 * (r % 4))) & 255) << 16) | (((l[(r + 1) >>> 2] >>> (24 - 8 * ((r + 1) % 4))) & 255) << 8) | ((l[(r + 2) >>> 2] >>> (24 - 8 * ((r + 2) % 4))) & 255), v = 0;
+          4 > v && r + 0.75 * v < p;
+          v++
+        )
+          d.push(t.charAt((w >>> (6 * (3 - v))) & 63))
+      if ((l = t.charAt(64))) for (; d.length % 4; ) d.push(l)
+      return d.join('')
+    },
+    parse: function (d) {
+      var l = d.length,
+        s = this._map,
+        t = s.charAt(64)
+      t && ((t = d.indexOf(t)), -1 != t && (l = t))
+      for (var t = [], r = 0, w = 0; w < l; w++)
+        if (w % 4) {
+          var v = s.indexOf(d.charAt(w - 1)) << (2 * (w % 4)),
+            b = s.indexOf(d.charAt(w)) >>> (6 - 2 * (w % 4))
+          t[r >>> 2] |= (v | b) << (24 - 8 * (r % 4))
+          r++
+        }
+      return p.create(t, r)
+    },
+    _map: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/='
+  }
+})()
+;(function (u) {
+  function p(b, n, a, c, e, j, k) {
+    b = b + ((n & a) | (~n & c)) + e + k
+    return ((b << j) | (b >>> (32 - j))) + n
+  }
+  function d(b, n, a, c, e, j, k) {
+    b = b + ((n & c) | (a & ~c)) + e + k
+    return ((b << j) | (b >>> (32 - j))) + n
+  }
+  function l(b, n, a, c, e, j, k) {
+    b = b + (n ^ a ^ c) + e + k
+    return ((b << j) | (b >>> (32 - j))) + n
+  }
+  function s(b, n, a, c, e, j, k) {
+    b = b + (a ^ (n | ~c)) + e + k
+    return ((b << j) | (b >>> (32 - j))) + n
+  }
+  for (var t = CryptoJS, r = t.lib, w = r.WordArray, v = r.Hasher, r = t.algo, b = [], x = 0; 64 > x; x++) b[x] = (4294967296 * u.abs(u.sin(x + 1))) | 0
+  r = r.MD5 = v.extend({
+    _doReset: function () {
+      this._hash = new w.init([1732584193, 4023233417, 2562383102, 271733878])
+    },
+    _doProcessBlock: function (q, n) {
+      for (var a = 0; 16 > a; a++) {
+        var c = n + a,
+          e = q[c]
+        q[c] = (((e << 8) | (e >>> 24)) & 16711935) | (((e << 24) | (e >>> 8)) & 4278255360)
+      }
+      var a = this._hash.words,
+        c = q[n + 0],
+        e = q[n + 1],
+        j = q[n + 2],
+        k = q[n + 3],
+        z = q[n + 4],
+        r = q[n + 5],
+        t = q[n + 6],
+        w = q[n + 7],
+        v = q[n + 8],
+        A = q[n + 9],
+        B = q[n + 10],
+        C = q[n + 11],
+        u = q[n + 12],
+        D = q[n + 13],
+        E = q[n + 14],
+        x = q[n + 15],
+        f = a[0],
+        m = a[1],
+        g = a[2],
+        h = a[3],
+        f = p(f, m, g, h, c, 7, b[0]),
+        h = p(h, f, m, g, e, 12, b[1]),
+        g = p(g, h, f, m, j, 17, b[2]),
+        m = p(m, g, h, f, k, 22, b[3]),
+        f = p(f, m, g, h, z, 7, b[4]),
+        h = p(h, f, m, g, r, 12, b[5]),
+        g = p(g, h, f, m, t, 17, b[6]),
+        m = p(m, g, h, f, w, 22, b[7]),
+        f = p(f, m, g, h, v, 7, b[8]),
+        h = p(h, f, m, g, A, 12, b[9]),
+        g = p(g, h, f, m, B, 17, b[10]),
+        m = p(m, g, h, f, C, 22, b[11]),
+        f = p(f, m, g, h, u, 7, b[12]),
+        h = p(h, f, m, g, D, 12, b[13]),
+        g = p(g, h, f, m, E, 17, b[14]),
+        m = p(m, g, h, f, x, 22, b[15]),
+        f = d(f, m, g, h, e, 5, b[16]),
+        h = d(h, f, m, g, t, 9, b[17]),
+        g = d(g, h, f, m, C, 14, b[18]),
+        m = d(m, g, h, f, c, 20, b[19]),
+        f = d(f, m, g, h, r, 5, b[20]),
+        h = d(h, f, m, g, B, 9, b[21]),
+        g = d(g, h, f, m, x, 14, b[22]),
+        m = d(m, g, h, f, z, 20, b[23]),
+        f = d(f, m, g, h, A, 5, b[24]),
+        h = d(h, f, m, g, E, 9, b[25]),
+        g = d(g, h, f, m, k, 14, b[26]),
+        m = d(m, g, h, f, v, 20, b[27]),
+        f = d(f, m, g, h, D, 5, b[28]),
+        h = d(h, f, m, g, j, 9, b[29]),
+        g = d(g, h, f, m, w, 14, b[30]),
+        m = d(m, g, h, f, u, 20, b[31]),
+        f = l(f, m, g, h, r, 4, b[32]),
+        h = l(h, f, m, g, v, 11, b[33]),
+        g = l(g, h, f, m, C, 16, b[34]),
+        m = l(m, g, h, f, E, 23, b[35]),
+        f = l(f, m, g, h, e, 4, b[36]),
+        h = l(h, f, m, g, z, 11, b[37]),
+        g = l(g, h, f, m, w, 16, b[38]),
+        m = l(m, g, h, f, B, 23, b[39]),
+        f = l(f, m, g, h, D, 4, b[40]),
+        h = l(h, f, m, g, c, 11, b[41]),
+        g = l(g, h, f, m, k, 16, b[42]),
+        m = l(m, g, h, f, t, 23, b[43]),
+        f = l(f, m, g, h, A, 4, b[44]),
+        h = l(h, f, m, g, u, 11, b[45]),
+        g = l(g, h, f, m, x, 16, b[46]),
+        m = l(m, g, h, f, j, 23, b[47]),
+        f = s(f, m, g, h, c, 6, b[48]),
+        h = s(h, f, m, g, w, 10, b[49]),
+        g = s(g, h, f, m, E, 15, b[50]),
+        m = s(m, g, h, f, r, 21, b[51]),
+        f = s(f, m, g, h, u, 6, b[52]),
+        h = s(h, f, m, g, k, 10, b[53]),
+        g = s(g, h, f, m, B, 15, b[54]),
+        m = s(m, g, h, f, e, 21, b[55]),
+        f = s(f, m, g, h, v, 6, b[56]),
+        h = s(h, f, m, g, x, 10, b[57]),
+        g = s(g, h, f, m, t, 15, b[58]),
+        m = s(m, g, h, f, D, 21, b[59]),
+        f = s(f, m, g, h, z, 6, b[60]),
+        h = s(h, f, m, g, C, 10, b[61]),
+        g = s(g, h, f, m, j, 15, b[62]),
+        m = s(m, g, h, f, A, 21, b[63])
+      a[0] = (a[0] + f) | 0
+      a[1] = (a[1] + m) | 0
+      a[2] = (a[2] + g) | 0
+      a[3] = (a[3] + h) | 0
+    },
+    _doFinalize: function () {
+      var b = this._data,
+        n = b.words,
+        a = 8 * this._nDataBytes,
+        c = 8 * b.sigBytes
+      n[c >>> 5] |= 128 << (24 - (c % 32))
+      var e = u.floor(a / 4294967296)
+      n[(((c + 64) >>> 9) << 4) + 15] = (((e << 8) | (e >>> 24)) & 16711935) | (((e << 24) | (e >>> 8)) & 4278255360)
+      n[(((c + 64) >>> 9) << 4) + 14] = (((a << 8) | (a >>> 24)) & 16711935) | (((a << 24) | (a >>> 8)) & 4278255360)
+      b.sigBytes = 4 * (n.length + 1)
+      this._process()
+      b = this._hash
+      n = b.words
+      for (a = 0; 4 > a; a++) (c = n[a]), (n[a] = (((c << 8) | (c >>> 24)) & 16711935) | (((c << 24) | (c >>> 8)) & 4278255360))
+      return b
+    },
+    clone: function () {
+      var b = v.clone.call(this)
+      b._hash = this._hash.clone()
+      return b
+    }
+  })
+  t.MD5 = v._createHelper(r)
+  t.HmacMD5 = v._createHmacHelper(r)
+})(Math)
+;(function () {
+  var u = CryptoJS,
+    p = u.lib,
+    d = p.Base,
+    l = p.WordArray,
+    p = u.algo,
+    s = (p.EvpKDF = d.extend({
+      cfg: d.extend({ keySize: 4, hasher: p.MD5, iterations: 1 }),
+      init: function (d) {
+        this.cfg = this.cfg.extend(d)
+      },
+      compute: function (d, r) {
+        for (var p = this.cfg, s = p.hasher.create(), b = l.create(), u = b.words, q = p.keySize, p = p.iterations; u.length < q; ) {
+          n && s.update(n)
+          var n = s.update(d).finalize(r)
+          s.reset()
+          for (var a = 1; a < p; a++) (n = s.finalize(n)), s.reset()
+          b.concat(n)
+        }
+        b.sigBytes = 4 * q
+        return b
+      }
+    }))
+  u.EvpKDF = function (d, l, p) {
+    return s.create(p).compute(d, l)
+  }
+})()
+CryptoJS.lib.Cipher ||
+  (function (u) {
+    var p = CryptoJS,
+      d = p.lib,
+      l = d.Base,
+      s = d.WordArray,
+      t = d.BufferedBlockAlgorithm,
+      r = p.enc.Base64,
+      w = p.algo.EvpKDF,
+      v = (d.Cipher = t.extend({
+        cfg: l.extend(),
+        createEncryptor: function (e, a) {
+          return this.create(this._ENC_XFORM_MODE, e, a)
+        },
+        createDecryptor: function (e, a) {
+          return this.create(this._DEC_XFORM_MODE, e, a)
+        },
+        init: function (e, a, b) {
+          this.cfg = this.cfg.extend(b)
+          this._xformMode = e
+          this._key = a
+          this.reset()
+        },
+        reset: function () {
+          t.reset.call(this)
+          this._doReset()
+        },
+        process: function (e) {
+          this._append(e)
+          return this._process()
+        },
+        finalize: function (e) {
+          e && this._append(e)
+          return this._doFinalize()
+        },
+        keySize: 4,
+        ivSize: 4,
+        _ENC_XFORM_MODE: 1,
+        _DEC_XFORM_MODE: 2,
+        _createHelper: function (e) {
+          return {
+            encrypt: function (b, k, d) {
+              return ('string' == typeof k ? c : a).encrypt(e, b, k, d)
+            },
+            decrypt: function (b, k, d) {
+              return ('string' == typeof k ? c : a).decrypt(e, b, k, d)
+            }
+          }
+        }
+      }))
+    d.StreamCipher = v.extend({
+      _doFinalize: function () {
+        return this._process(!0)
+      },
+      blockSize: 1
+    })
+    var b = (p.mode = {}),
+      x = function (e, a, b) {
+        var c = this._iv
+        c ? (this._iv = u) : (c = this._prevBlock)
+        for (var d = 0; d < b; d++) e[a + d] ^= c[d]
+      },
+      q = (d.BlockCipherMode = l.extend({
+        createEncryptor: function (e, a) {
+          return this.Encryptor.create(e, a)
+        },
+        createDecryptor: function (e, a) {
+          return this.Decryptor.create(e, a)
+        },
+        init: function (e, a) {
+          this._cipher = e
+          this._iv = a
+        }
+      })).extend()
+    q.Encryptor = q.extend({
+      processBlock: function (e, a) {
+        var b = this._cipher,
+          c = b.blockSize
+        x.call(this, e, a, c)
+        b.encryptBlock(e, a)
+        this._prevBlock = e.slice(a, a + c)
+      }
+    })
+    q.Decryptor = q.extend({
+      processBlock: function (e, a) {
+        var b = this._cipher,
+          c = b.blockSize,
+          d = e.slice(a, a + c)
+        b.decryptBlock(e, a)
+        x.call(this, e, a, c)
+        this._prevBlock = d
+      }
+    })
+    b = b.CBC = q
+    q = (p.pad = {}).Pkcs7 = {
+      pad: function (a, b) {
+        for (var c = 4 * b, c = c - (a.sigBytes % c), d = (c << 24) | (c << 16) | (c << 8) | c, l = [], n = 0; n < c; n += 4) l.push(d)
+        c = s.create(l, c)
+        a.concat(c)
+      },
+      unpad: function (a) {
+        a.sigBytes -= a.words[(a.sigBytes - 1) >>> 2] & 255
+      }
+    }
+    d.BlockCipher = v.extend({
+      cfg: v.cfg.extend({ mode: b, padding: q }),
+      reset: function () {
+        v.reset.call(this)
+        var a = this.cfg,
+          b = a.iv,
+          a = a.mode
+        if (this._xformMode == this._ENC_XFORM_MODE) var c = a.createEncryptor
+        else (c = a.createDecryptor), (this._minBufferSize = 1)
+        this._mode = c.call(a, this, b && b.words)
+      },
+      _doProcessBlock: function (a, b) {
+        this._mode.processBlock(a, b)
+      },
+      _doFinalize: function () {
+        var a = this.cfg.padding
+        if (this._xformMode == this._ENC_XFORM_MODE) {
+          a.pad(this._data, this.blockSize)
+          var b = this._process(!0)
+        } else (b = this._process(!0)), a.unpad(b)
+        return b
+      },
+      blockSize: 4
+    })
+    var n = (d.CipherParams = l.extend({
+        init: function (a) {
+          this.mixIn(a)
+        },
+        toString: function (a) {
+          return (a || this.formatter).stringify(this)
+        }
+      })),
+      b = ((p.format = {}).OpenSSL = {
+        stringify: function (a) {
+          var b = a.ciphertext
+          a = a.salt
+          return (a ? s.create([1398893684, 1701076831]).concat(a).concat(b) : b).toString(r)
+        },
+        parse: function (a) {
+          a = r.parse(a)
+          var b = a.words
+          if (1398893684 == b[0] && 1701076831 == b[1]) {
+            var c = s.create(b.slice(2, 4))
+            b.splice(0, 4)
+            a.sigBytes -= 16
+          }
+          return n.create({ ciphertext: a, salt: c })
+        }
+      }),
+      a = (d.SerializableCipher = l.extend({
+        cfg: l.extend({ format: b }),
+        encrypt: function (a, b, c, d) {
+          d = this.cfg.extend(d)
+          var l = a.createEncryptor(c, d)
+          b = l.finalize(b)
+          l = l.cfg
+          return n.create({ ciphertext: b, key: c, iv: l.iv, algorithm: a, mode: l.mode, padding: l.padding, blockSize: a.blockSize, formatter: d.format })
+        },
+        decrypt: function (a, b, c, d) {
+          d = this.cfg.extend(d)
+          b = this._parse(b, d.format)
+          return a.createDecryptor(c, d).finalize(b.ciphertext)
+        },
+        _parse: function (a, b) {
+          return 'string' == typeof a ? b.parse(a, this) : a
+        }
+      })),
+      p = ((p.kdf = {}).OpenSSL = {
+        execute: function (a, b, c, d) {
+          d || (d = s.random(8))
+          a = w.create({ keySize: b + c }).compute(a, d)
+          c = s.create(a.words.slice(b), 4 * c)
+          a.sigBytes = 4 * b
+          return n.create({ key: a, iv: c, salt: d })
+        }
+      }),
+      c = (d.PasswordBasedCipher = a.extend({
+        cfg: a.cfg.extend({ kdf: p }),
+        encrypt: function (b, c, d, l) {
+          l = this.cfg.extend(l)
+          d = l.kdf.execute(d, b.keySize, b.ivSize)
+          l.iv = d.iv
+          b = a.encrypt.call(this, b, c, d.key, l)
+          b.mixIn(d)
+          return b
+        },
+        decrypt: function (b, c, d, l) {
+          l = this.cfg.extend(l)
+          c = this._parse(c, l.format)
+          d = l.kdf.execute(d, b.keySize, b.ivSize, c.salt)
+          l.iv = d.iv
+          return a.decrypt.call(this, b, c, d.key, l)
+        }
+      }))
+  })()
+;(function () {
+  for (var u = CryptoJS, p = u.lib.BlockCipher, d = u.algo, l = [], s = [], t = [], r = [], w = [], v = [], b = [], x = [], q = [], n = [], a = [], c = 0; 256 > c; c++)
+    a[c] = 128 > c ? c << 1 : (c << 1) ^ 283
+  for (var e = 0, j = 0, c = 0; 256 > c; c++) {
+    var k = j ^ (j << 1) ^ (j << 2) ^ (j << 3) ^ (j << 4),
+      k = (k >>> 8) ^ (k & 255) ^ 99
+    l[e] = k
+    s[k] = e
+    var z = a[e],
+      F = a[z],
+      G = a[F],
+      y = (257 * a[k]) ^ (16843008 * k)
+    t[e] = (y << 24) | (y >>> 8)
+    r[e] = (y << 16) | (y >>> 16)
+    w[e] = (y << 8) | (y >>> 24)
+    v[e] = y
+    y = (16843009 * G) ^ (65537 * F) ^ (257 * z) ^ (16843008 * e)
+    b[k] = (y << 24) | (y >>> 8)
+    x[k] = (y << 16) | (y >>> 16)
+    q[k] = (y << 8) | (y >>> 24)
+    n[k] = y
+    e ? ((e = z ^ a[a[a[G ^ z]]]), (j ^= a[a[j]])) : (e = j = 1)
+  }
+  var H = [0, 1, 2, 4, 8, 16, 32, 64, 128, 27, 54],
+    d = (d.AES = p.extend({
+      _doReset: function () {
+        for (var a = this._key, c = a.words, d = a.sigBytes / 4, a = 4 * ((this._nRounds = d + 6) + 1), e = (this._keySchedule = []), j = 0; j < a; j++)
+          if (j < d) e[j] = c[j]
+          else {
+            var k = e[j - 1]
+            j % d
+              ? 6 < d && 4 == j % d && (k = (l[k >>> 24] << 24) | (l[(k >>> 16) & 255] << 16) | (l[(k >>> 8) & 255] << 8) | l[k & 255])
+              : ((k = (k << 8) | (k >>> 24)), (k = (l[k >>> 24] << 24) | (l[(k >>> 16) & 255] << 16) | (l[(k >>> 8) & 255] << 8) | l[k & 255]), (k ^= H[(j / d) | 0] << 24))
+            e[j] = e[j - d] ^ k
+          }
+        c = this._invKeySchedule = []
+        for (d = 0; d < a; d++) (j = a - d), (k = d % 4 ? e[j] : e[j - 4]), (c[d] = 4 > d || 4 >= j ? k : b[l[k >>> 24]] ^ x[l[(k >>> 16) & 255]] ^ q[l[(k >>> 8) & 255]] ^ n[l[k & 255]])
+      },
+      encryptBlock: function (a, b) {
+        this._doCryptBlock(a, b, this._keySchedule, t, r, w, v, l)
+      },
+      decryptBlock: function (a, c) {
+        var d = a[c + 1]
+        a[c + 1] = a[c + 3]
+        a[c + 3] = d
+        this._doCryptBlock(a, c, this._invKeySchedule, b, x, q, n, s)
+        d = a[c + 1]
+        a[c + 1] = a[c + 3]
+        a[c + 3] = d
+      },
+      _doCryptBlock: function (a, b, c, d, e, j, l, f) {
+        for (var m = this._nRounds, g = a[b] ^ c[0], h = a[b + 1] ^ c[1], k = a[b + 2] ^ c[2], n = a[b + 3] ^ c[3], p = 4, r = 1; r < m; r++)
+          var q = d[g >>> 24] ^ e[(h >>> 16) & 255] ^ j[(k >>> 8) & 255] ^ l[n & 255] ^ c[p++],
+            s = d[h >>> 24] ^ e[(k >>> 16) & 255] ^ j[(n >>> 8) & 255] ^ l[g & 255] ^ c[p++],
+            t = d[k >>> 24] ^ e[(n >>> 16) & 255] ^ j[(g >>> 8) & 255] ^ l[h & 255] ^ c[p++],
+            n = d[n >>> 24] ^ e[(g >>> 16) & 255] ^ j[(h >>> 8) & 255] ^ l[k & 255] ^ c[p++],
+            g = q,
+            h = s,
+            k = t
+        q = ((f[g >>> 24] << 24) | (f[(h >>> 16) & 255] << 16) | (f[(k >>> 8) & 255] << 8) | f[n & 255]) ^ c[p++]
+        s = ((f[h >>> 24] << 24) | (f[(k >>> 16) & 255] << 16) | (f[(n >>> 8) & 255] << 8) | f[g & 255]) ^ c[p++]
+        t = ((f[k >>> 24] << 24) | (f[(n >>> 16) & 255] << 16) | (f[(g >>> 8) & 255] << 8) | f[h & 255]) ^ c[p++]
+        n = ((f[n >>> 24] << 24) | (f[(g >>> 16) & 255] << 16) | (f[(h >>> 8) & 255] << 8) | f[k & 255]) ^ c[p++]
+        a[b] = q
+        a[b + 1] = s
+        a[b + 2] = t
+        a[b + 3] = n
+      },
+      keySize: 8
+    }))
+  u.AES = p._createHelper(d)
+})()
+/* eslint-enable */
+// #endregion
+
 // #region uiTools
 // prettier-ignore
 !function (t, e) { 'object' == typeof exports && 'object' == typeof module ? module.exports = e() : 'function' == typeof define && define.amd ? define('uiWidgets', [], e) : 'object' == typeof exports ? exports.uiWidgets = e() : t.uiWidgets = e() }(window, (function () { return function (t) { var e = {}; function i(n) { if (e[n]) return e[n].exports; var r = e[n] = { i: n, l: !1, exports: {} }; return t[n].call(r.exports, r, r.exports, i), r.l = !0, r.exports } return i.m = t, i.c = e, i.d = function (t, e, n) { i.o(t, e) || Object.defineProperty(t, e, { enumerable: !0, get: n }) }, i.r = function (t) { 'undefined' != typeof Symbol && Symbol.toStringTag && Object.defineProperty(t, Symbol.toStringTag, { value: 'Module' }), Object.defineProperty(t, '__esModule', { value: !0 }) }, i.t = function (t, e) { if (1 & e && (t = i(t)), 8 & e) return t; if (4 & e && 'object' == typeof t && t && t.__esModule) return t; var n = Object.create(null); if (i.r(n), Object.defineProperty(n, 'default', { enumerable: !0, value: t }), 2 & e && 'string' != typeof t) for (var r in t) i.d(n, r, function (e) { return t[e] }.bind(null, r)); return n }, i.n = function (t) { var e = t && t.__esModule ? function () { return t.default } : function () { return t }; return i.d(e, 'a', e), e }, i.o = function (t, e) { return Object.prototype.hasOwnProperty.call(t, e) }, i.p = '', i(i.s = 1) }([function (t, e, i) { 'use strict'; var n = Object.prototype.hasOwnProperty, r = '~'; function o() { } function a(t, e, i) { this.fn = t, this.context = e, this.once = i || !1 } function s(t, e, i, n, o) { if ('function' != typeof i) throw new TypeError('The listener must be a function'); var s = new a(i, n || t, o), u = r ? r + e : e; return t._events[u] ? t._events[u].fn ? t._events[u] = [t._events[u], s] : t._events[u].push(s) : (t._events[u] = s, t._eventsCount++), t } function u(t, e) { 0 == --t._eventsCount ? t._events = new o : delete t._events[e] } function c() { this._events = new o, this._eventsCount = 0 } Object.create && (o.prototype = Object.create(null), (new o).__proto__ || (r = !1)), c.prototype.eventNames = function () { var t, e, i = []; if (0 === this._eventsCount) return i; for (e in t = this._events) n.call(t, e) && i.push(r ? e.slice(1) : e); return Object.getOwnPropertySymbols ? i.concat(Object.getOwnPropertySymbols(t)) : i }, c.prototype.listeners = function (t) { var e = r ? r + t : t, i = this._events[e]; if (!i) return []; if (i.fn) return [i.fn]; for (var n = 0, o = i.length, a = new Array(o); n < o; n++)a[n] = i[n].fn; return a }, c.prototype.listenerCount = function (t) { var e = r ? r + t : t, i = this._events[e]; return i ? i.fn ? 1 : i.length : 0 }, c.prototype.emit = function (t, e, i, n, o, a) { var s = r ? r + t : t; if (!this._events[s]) return !1; var u, c, h = this._events[s], l = arguments.length; if (h.fn) { switch (h.once && this.removeListener(t, h.fn, void 0, !0), l) { case 1: return h.fn.call(h.context), !0; case 2: return h.fn.call(h.context, e), !0; case 3: return h.fn.call(h.context, e, i), !0; case 4: return h.fn.call(h.context, e, i, n), !0; case 5: return h.fn.call(h.context, e, i, n, o), !0; case 6: return h.fn.call(h.context, e, i, n, o, a), !0 }for (c = 1, u = new Array(l - 1); c < l; c++)u[c - 1] = arguments[c]; h.fn.apply(h.context, u) } else { var f, y = h.length; for (c = 0; c < y; c++)switch (h[c].once && this.removeListener(t, h[c].fn, void 0, !0), l) { case 1: h[c].fn.call(h[c].context); break; case 2: h[c].fn.call(h[c].context, e); break; case 3: h[c].fn.call(h[c].context, e, i); break; case 4: h[c].fn.call(h[c].context, e, i, n); break; default: if (!u) for (f = 1, u = new Array(l - 1); f < l; f++)u[f - 1] = arguments[f]; h[c].fn.apply(h[c].context, u) } } return !0 }, c.prototype.on = function (t, e, i) { return s(this, t, e, i, !1) }, c.prototype.once = function (t, e, i) { return s(this, t, e, i, !0) }, c.prototype.removeListener = function (t, e, i, n) { var o = r ? r + t : t; if (!this._events[o]) return this; if (!e) return u(this, o), this; var a = this._events[o]; if (a.fn) a.fn !== e || n && !a.once || i && a.context !== i || u(this, o); else { for (var s = 0, c = [], h = a.length; s < h; s++)(a[s].fn !== e || n && !a[s].once || i && a[s].context !== i) && c.push(a[s]); c.length ? this._events[o] = 1 === c.length ? c[0] : c : u(this, o) } return this }, c.prototype.removeAllListeners = function (t) { var e; return t ? (e = r ? r + t : t, this._events[e] && u(this, e)) : (this._events = new o, this._eventsCount = 0), this }, c.prototype.off = c.prototype.removeListener, c.prototype.addListener = c.prototype.on, c.prefixed = r, c.EventEmitter = c, t.exports = c }, function (t, e, i) { 'use strict'; function n(t) { return (n = 'function' == typeof Symbol && 'symbol' == typeof Symbol.iterator ? function (t) { return typeof t } : function (t) { return t && 'function' == typeof Symbol && t.constructor === Symbol && t !== Symbol.prototype ? 'symbol' : typeof t })(t) } function r(t, e) { if (!(t instanceof e)) throw new TypeError('Cannot call a class as a function') } function o(t, e) { for (var i = 0; i < e.length; i++) { var n = e[i]; n.enumerable = n.enumerable || !1, n.configurable = !0, 'value' in n && (n.writable = !0), Object.defineProperty(t, n.key, n) } } function a(t, e, i) { return e && o(t.prototype, e), i && o(t, i), t } function s(t, e) { return !e || 'object' !== n(e) && 'function' != typeof e ? c(t) : e } function u(t) { return (u = Object.setPrototypeOf ? Object.getPrototypeOf : function (t) { return t.__proto__ || Object.getPrototypeOf(t) })(t) } function c(t) { if (void 0 === t) throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); return t } function h(t, e) { if ('function' != typeof e && null !== e) throw new TypeError('Super expression must either be null or a function'); t.prototype = Object.create(e && e.prototype, { constructor: { value: t, writable: !0, configurable: !0 } }), e && l(t, e) } function l(t, e) { return (l = Object.setPrototypeOf || function (t, e) { return t.__proto__ = e, t })(t, e) } var f; (i.r(e), void 0 === Phaser.Sprite) ? f = function (t) { function e(t, i, n, o) { var a; r(this, e), a = s(this, u(e).call(this, t, i, n, o)), t.add.existing(c(a)); var h = Phaser.Display.Align.In; return a.alignInMapping = { 0: h.TopLeft, 1: h.TopCenter, 2: h.TopRight, 3: h.LeftTop, 4: h.LeftCenter, 5: h.LeftBottom, 6: h.Center, 7: h.RightTop, 8: h.RightCenter, 9: h.RightBottom, 10: h.BottomLeft, 11: h.BottomCenter, 12: h.BottomRight }, a } return h(e, Phaser.GameObjects.Sprite), a(e, [{ key: 'sendToBack', value: function () { this.depth = -9999 } }, { key: 'alignIn', value: function (t, e) { this.alignInMapping[e](this, t, t.width) } }, { key: 'addOutEvent', value: function (t, e) { this.on('pointerout', (function (i) { t.call(e, i) })) } }, { key: 'addUpEvent', value: function (t, e) { this.on('pointerup', (function (i) { t.call(e, i) })) } }, { key: 'addDownEvent', value: function (t, e) { this.on('pointerdown', (function (i) { t.call(e, i) })) } }, { key: 'addDragEvent', value: function (t, e) { this.on('drag', (function () { t.call(e) })) } }, { key: 'maskX', get: function () { return this.x } }, { key: 'maskY', get: function () { return this.y } }]), e }() : f = function (t) { function e(t, i, n, o) { var a; return r(this, e), a = s(this, u(e).call(this, t, i, n, o)), t.add.existing(c(a)), a } return h(e, Phaser.Sprite), a(e, [{ key: 'setInteractive', value: function () { this.inputEnabled = !0 } }, { key: 'disableInteractive', value: function () { this.inputEnabled = !1 } }, { key: 'addOutEvent', value: function (t, e) { this.events.onInputOut.add(t, e) } }, { key: 'addUpEvent', value: function (t, e) { this.events.onInputUp.add(t, e) } }, { key: 'addDownEvent', value: function (t, e) { this.events.onInputDown.add(t, e) } }, { key: 'maskX', get: function () { return 0 } }, { key: 'maskY', get: function () { return 0 } }, { key: 'displayHeight', get: function () { return this.height }, set: function (t) { this.height = t } }, { key: 'displayWidth', get: function () { return this.width }, set: function (t) { this.width = t } }]), e }(); var y, p = f; function d(t) { return (d = 'function' == typeof Symbol && 'symbol' == typeof Symbol.iterator ? function (t) { return typeof t } : function (t) { return t && 'function' == typeof Symbol && t.constructor === Symbol && t !== Symbol.prototype ? 'symbol' : typeof t })(t) } function b(t, e) { if (!(t instanceof e)) throw new TypeError('Cannot call a class as a function') } function v(t, e) { for (var i = 0; i < e.length; i++) { var n = e[i]; n.enumerable = n.enumerable || !1, n.configurable = !0, 'value' in n && (n.writable = !0), Object.defineProperty(t, n.key, n) } } function g(t, e, i) { return e && v(t.prototype, e), i && v(t, i), t } function m(t, e) { return !e || 'object' !== d(e) && 'function' != typeof e ? w(t) : e } function k(t) { return (k = Object.setPrototypeOf ? Object.getPrototypeOf : function (t) { return t.__proto__ || Object.getPrototypeOf(t) })(t) } function w(t) { if (void 0 === t) throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); return t } function x(t, e) { if ('function' != typeof e && null !== e) throw new TypeError('Super expression must either be null or a function'); t.prototype = Object.create(e && e.prototype, { constructor: { value: t, writable: !0, configurable: !0 } }), e && O(t, e) } function O(t, e) { return (O = Object.setPrototypeOf || function (t, e) { return t.__proto__ = e, t })(t, e) } void 0 === Phaser.Button ? y = function (t) { function e(t, i, n, r, o, a, s, u, c, h) { var l; b(this, e), l = m(this, k(e).call(this, t, i, n, r)), t.add.existing(w(l)), l.game = t, l.overKey = s, l.outKey = u, l.downKey = c, l.upKey = h, l.setInteractive({ useHandCursor: !0 }); var f = a; return null == f && (f = w(l)), l.on('pointerdown', (function (t) { o.call(f, t) })), l.on('pointerover', l.onOver, w(l)), l.on('pointerout', l.onOut, w(l)), l.on('pointerdown', l.onDown, w(l)), l.on('pointerup', l.onUp, w(l)), l } return x(e, t), g(e, [{ key: 'onOver', value: function () { this.setFrame(this.overKey) } }, { key: 'onOut', value: function () { this.setFrame(this.outKey) } }, { key: 'onDown', value: function () { this.setFrame(this.downKey) } }, { key: 'onUp', value: function () { this.setFrame(this.upKey) } }, { key: 'updateDrag', value: function (t, e, i, n) { if (e.vertical) e.draggableArea.y + e.draggableArea.h >= n && e.draggableArea.y <= n && (e.y = n); else { var r = i + e.displayWidth; e.draggableArea.x + e.draggableArea.w >= r && e.draggableArea.x <= i && (e.x = i) } } }, { key: 'setDragBounds', value: function (t) { this.draggableArea = t } }, { key: 'enableDragging', value: function () { var t = arguments.length > 0 && void 0 !== arguments[0] && arguments[0]; this.setInteractive({ useHandCursor: !0 }), this.vertical = t, this.game.input.setDraggable(this), this.game.input.on('drag', this.updateDrag) } }]), e }(p) : y = function (t) { function e(t, i, n, r, o, a, s, u, c, h) { var l; return b(this, e), l = m(this, k(e).call(this, t, i, n, r, o, a, s, u, c, h)), t.add.existing(w(l)), l } return x(e, Phaser.Button), g(e, [{ key: 'setInteractive', value: function () { this.inputEnabled = !0, this.input.useHandCursor = !0 } }, { key: 'disableInteractive', value: function () { this.inputEnabled = !1 } }, { key: 'setDragBounds', value: function (t) { this.input.boundsRect = new Phaser.Rectangle(t.x, t.y, t.w, t.h) } }, { key: 'enableDragging', value: function () { var t = arguments.length > 0 && void 0 !== arguments[0] && arguments[0]; this.inputEnabled = !0, this.input.enableDrag(), t ? this.input.allowHorizontalDrag = !1 : this.input.allowVerticalDrag = !1 } }, { key: 'addOutEvent', value: function (t, e) { this.events.onInputOut.add(t, e) } }, { key: 'addUpEvent', value: function (t, e) { this.events.onInputUp.add(t, e) } }, { key: 'addDownEvent', value: function (t, e) { this.events.onInputDown.add(t, e) } }, { key: 'addDragEvent', value: function (t, e) { this.events.onDragUpdate.add(t, e) } }, { key: 'displayHeight', get: function () { return this.height }, set: function (t) { this.height = t } }, { key: 'displayWidth', get: function () { return this.width }, set: function (t) { this.width = t } }]), e }(); var S, P = y, _ = void 0 === Phaser.Easing ? Phaser.Math.Easing : Phaser.Easing; function j(t) { return (j = 'function' == typeof Symbol && 'symbol' == typeof Symbol.iterator ? function (t) { return typeof t } : function (t) { return t && 'function' == typeof Symbol && t.constructor === Symbol && t !== Symbol.prototype ? 'symbol' : typeof t })(t) } function T(t, e) { for (var i = 0; i < e.length; i++) { var n = e[i]; n.enumerable = n.enumerable || !1, n.configurable = !0, 'value' in n && (n.writable = !0), Object.defineProperty(t, n.key, n) } } function E(t, e) { return !e || 'object' !== j(e) && 'function' != typeof e ? function (t) { if (void 0 === t) throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); return t }(t) : e } function R(t) { return (R = Object.setPrototypeOf ? Object.getPrototypeOf : function (t) { return t.__proto__ || Object.getPrototypeOf(t) })(t) } function C(t, e) { return (C = Object.setPrototypeOf || function (t, e) { return t.__proto__ = e, t })(t, e) } void 0 === Phaser.Graphics ? S = Phaser.GameObjects.Graphics : S = function (t) { function e(t, i) { return function (t, e) { if (!(t instanceof e)) throw new TypeError('Cannot call a class as a function') }(this, e), E(this, R(e).call(this, t, i.x, i.y)) } var i, n, r; return function (t, e) { if ('function' != typeof e && null !== e) throw new TypeError('Super expression must either be null or a function'); t.prototype = Object.create(e && e.prototype, { constructor: { value: t, writable: !0, configurable: !0 } }), e && C(t, e) }(e, Phaser.Graphics), i = e, (n = [{ key: 'fillStyle', value: function (t, e) { this.beginFill(t, e) } }, { key: 'fillRect', value: function (t, e, i, n) { this.drawRect(t, e, i, n), this.endFill() } }]) && T(i.prototype, n), r && T(i, r), e }(); var A, I = S; function D(t) { return (D = 'function' == typeof Symbol && 'symbol' == typeof Symbol.iterator ? function (t) { return typeof t } : function (t) { return t && 'function' == typeof Symbol && t.constructor === Symbol && t !== Symbol.prototype ? 'symbol' : typeof t })(t) } function B(t, e) { return !e || 'object' !== D(e) && 'function' != typeof e ? M(t) : e } function z(t) { return (z = Object.setPrototypeOf ? Object.getPrototypeOf : function (t) { return t.__proto__ || Object.getPrototypeOf(t) })(t) } function M(t) { if (void 0 === t) throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); return t } function H(t, e) { if ('function' != typeof e && null !== e) throw new TypeError('Super expression must either be null or a function'); t.prototype = Object.create(e && e.prototype, { constructor: { value: t, writable: !0, configurable: !0 } }), e && V(t, e) } function V(t, e) { return (V = Object.setPrototypeOf || function (t, e) { return t.__proto__ = e, t })(t, e) } function W(t, e) { if (!(t instanceof e)) throw new TypeError('Cannot call a class as a function') } function N(t, e) { for (var i = 0; i < e.length; i++) { var n = e[i]; n.enumerable = n.enumerable || !1, n.configurable = !0, 'value' in n && (n.writable = !0), Object.defineProperty(t, n.key, n) } } function K(t, e, i) { return e && N(t.prototype, e), i && N(t, i), t } if (void 0 === Phaser.Group) { var G = function () { function t(e) { W(this, t), this.parent = e } return K(t, [{ key: 'x', get: function () { return this.parent.x } }, { key: 'y', get: function () { return this.parent.y } }]), t }(); A = function (t) { function e(t) { var i, n = arguments.length > 1 && void 0 !== arguments[1] ? arguments[1] : 0, r = arguments.length > 2 && void 0 !== arguments[2] ? arguments[2] : 0; return W(this, e), i = B(this, z(e).call(this, t, n, r)), t.add.existing(M(i)), i.SORT_ASCENDING = -1, i.SORT_DESCENDING = 1, i.version = 3, i.alignToMapping = { 0: Phaser.Display.Align.To.TopLeft, 1: Phaser.Display.Align.To.TopCenter, 8: Phaser.Display.Align.To.RightCenter, 11: Phaser.Display.Align.To.BottomCenter }, i.worldPosition = new G(M(i)), i } return H(e, Phaser.GameObjects.Container), K(e, [{ key: 'getNodes', value: function () { return this.getAll() } }, { key: 'alignNodeToPrevious', value: function (t, e, i, n) { var r = this.getNodes(), o = r[r.length - 2]; void 0 !== o && this.alignToMapping[e](t, o, i, n) } }, { key: 'children', get: function () { return this.list } }, { key: 'realHeight', get: function () { return this.getBounds().height - this.y } }, { key: 'realWidth', get: function () { return this.getBounds().width - this.x } }]), e }() } else { A = function (t) { function e(t) { var i; return W(this, e), (i = B(this, z(e).call(this, t))).SORT_ASCENDING = -1, i.SORT_DESCENDING = 1, i } return H(e, Phaser.Group), K(e, [{ key: 'getNodes', value: function () { return this.children } }, { key: 'alignNodeToPrevious', value: function (t, e, i, n) { var r = this.getNodes(), o = r[r.length - 2]; void 0 !== o && t.alignTo(o, e, i, n) } }, { key: 'realHeight', get: function () { return this.height } }, { key: 'realWidth', get: function () { return this.width } }]), e }() } var Y, X = A; void 0 === Phaser.Rectangle ? Phaser.Geom.Rectangle : Phaser.Rectangle; function F(t, e) { if (!(t instanceof e)) throw new TypeError('Cannot call a class as a function') } function L(t, e) { for (var i = 0; i < e.length; i++) { var n = e[i]; n.enumerable = n.enumerable || !1, n.configurable = !0, 'value' in n && (n.writable = !0), Object.defineProperty(t, n.key, n) } } function U(t, e, i) { return e && L(t.prototype, e), i && L(t, i), t } void 0 === Phaser.Tween ? Y = function () { function t(e) { F(this, t), this.game = e } return U(t, [{ key: 'add', value: function (t, e, i, n, r, o, a, s, u, c) { var h = { targets: t, duration: i, ease: n, onComplete: r, onUpdate: o, onStart: a, onCompleteScope: s, onUpdateScope: u, onStartScope: c }, l = Object.assign(h, e); this.game.tweens.add(l) } }]), t }() : Y = function () { function t(e) { F(this, t), this.game = e } return U(t, [{ key: 'add', value: function (t, e, i, n, r, o, a, s, u, c) { var h = this.game.add.tween(t).to(e, i, n, !0); o && h.onUpdateCallback(o, u), r && h.onComplete.add(r, s), a && h.onStart.add(a, c) } }]), t }(); var Q, Z = Y; function q(t) { return (q = 'function' == typeof Symbol && 'symbol' == typeof Symbol.iterator ? function (t) { return typeof t } : function (t) { return t && 'function' == typeof Symbol && t.constructor === Symbol && t !== Symbol.prototype ? 'symbol' : typeof t })(t) } function J(t, e) { if (!(t instanceof e)) throw new TypeError('Cannot call a class as a function') } function $(t, e) { for (var i = 0; i < e.length; i++) { var n = e[i]; n.enumerable = n.enumerable || !1, n.configurable = !0, 'value' in n && (n.writable = !0), Object.defineProperty(t, n.key, n) } } function tt(t, e, i) { return e && $(t.prototype, e), i && $(t, i), t } function et(t, e) { return !e || 'object' !== q(e) && 'function' != typeof e ? function (t) { if (void 0 === t) throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); return t }(t) : e } function it(t) { return (it = Object.setPrototypeOf ? Object.getPrototypeOf : function (t) { return t.__proto__ || Object.getPrototypeOf(t) })(t) } function nt(t, e) { if ('function' != typeof e && null !== e) throw new TypeError('Super expression must either be null or a function'); t.prototype = Object.create(e && e.prototype, { constructor: { value: t, writable: !0, configurable: !0 } }), e && rt(t, e) } function rt(t, e) { return (rt = Object.setPrototypeOf || function (t, e) { return t.__proto__ = e, t })(t, e) } void 0 === Phaser.Graphics ? Q = function (t) { function e(t, i, n) { var r; return J(this, e), (r = et(this, it(e).call(this, t, { x: i, y: n }))).game = t, r.x = i, r.y = n, r } return nt(e, Phaser.GameObjects.Graphics), tt(e, [{ key: 'create', value: function (t, e, i, n) { this.fillStyle(16777215), this.beginPath(), this.fillRect(t, e, i, n); var r = this.createGeometryMask(); return r.x = r.geometryMask.x, r.y = r.geometryMask.y, r.width = i, r.height = n, r } }]), e }() : Q = function (t) { function e() { return J(this, e), et(this, it(e).apply(this, arguments)) } return nt(e, Phaser.Graphics), tt(e, [{ key: 'create', value: function (t, e, i, n) { return this.beginFill(255), this.drawRect(t, e, i, n), this.endFill(), this.geometryMask = this, this } }, { key: 'scaleX', get: function () { return this.scale.x }, set: function (t) { this.scale.x = t } }, { key: 'scaleY', get: function () { return this.scale.y }, set: function (t) { this.scale.y = t } }]), e }(); var ot = Q; function at(t) { return (at = 'function' == typeof Symbol && 'symbol' == typeof Symbol.iterator ? function (t) { return typeof t } : function (t) { return t && 'function' == typeof Symbol && t.constructor === Symbol && t !== Symbol.prototype ? 'symbol' : typeof t })(t) } function st(t, e) { if (!(t instanceof e)) throw new TypeError('Cannot call a class as a function') } function ut(t, e) { for (var i = 0; i < e.length; i++) { var n = e[i]; n.enumerable = n.enumerable || !1, n.configurable = !0, 'value' in n && (n.writable = !0), Object.defineProperty(t, n.key, n) } } function ct(t, e, i) { return e && ut(t.prototype, e), i && ut(t, i), t } function ht(t, e) { return !e || 'object' !== at(e) && 'function' != typeof e ? lt(t) : e } function lt(t) { if (void 0 === t) throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); return t } function ft(t) { return (ft = Object.setPrototypeOf ? Object.getPrototypeOf : function (t) { return t.__proto__ || Object.getPrototypeOf(t) })(t) } function yt(t, e) { if ('function' != typeof e && null !== e) throw new TypeError('Super expression must either be null or a function'); t.prototype = Object.create(e && e.prototype, { constructor: { value: t, writable: !0, configurable: !0 } }), e && pt(t, e) } function pt(t, e) { return (pt = Object.setPrototypeOf || function (t, e) { return t.__proto__ = e, t })(t, e) } var dt = function (t) { function e() { return st(this, e), ht(this, ft(e).apply(this, arguments)) } return yt(e, t), ct(e, [{ key: 'setText', value: function (t, e) { return this.text && this.text.destroy(), 3 === this.version ? (this.text = this.game.add.text(0, 0, t, e), this.text.setOrigin(.5, .5)) : (this.text = this.game.add.text(this.width / 2, this.height / 2, t, e), this.text.anchor.set(.5, .5)), this.add(this.text), this } }, { key: 'setOrigin', value: function (t, e) { return this.sprite.setOrigin(t, e), this.text.x = this.sprite.width / 2, this.text.y = this.sprite.height / 2, this } }]), e }(X), bt = function (t) { function e(t, i, n, r) { var o; return st(this, e), (o = ht(this, ft(e).call(this, t))).game = t, t.add.existing(lt(o)), o.sprite = new p(t, i, n, r), o.add(o.sprite), o.width = o.sprite.width, o.height = o.sprite.height, o } return yt(e, t), e }(dt), vt = function (t) { function e(t, i, n, r, o, a, s, u, c, h) { var l; return st(this, e), (l = ht(this, ft(e).call(this, t))).game = t, t.add.existing(lt(l)), l.button = new P(t, i, n, r, o, a, s, u, c, h), l.add(l.button), l.width = l.button.width, l.height = l.button.height, l } return yt(e, t), ct(e, [{ key: 'eventTextYAdjustment', value: function (t) { var e = this, i = this.text.y; return this.button.addDownEvent((function () { e.text.y += t })), this.button.addUpEvent((function () { e.text.y = i })), this.button.addOutEvent((function () { e.text.y = i })), this } }]), e }(dt), gt = i(0); function mt(t, e) { for (var i = 0; i < e.length; i++) { var n = e[i]; n.enumerable = n.enumerable || !1, n.configurable = !0, 'value' in n && (n.writable = !0), Object.defineProperty(t, n.key, n) } } var kt = function () { function t(e, i, n) { !function (t, e) { if (!(t instanceof e)) throw new TypeError('Cannot call a class as a function') }(this, t), this.game = e, this.vertical = i || !1, this.callbackContext = n, this.children = [], this.selected = null, this.idx = 0, this.upKey = this.game.input.keyboard.addKey(Phaser.Keyboard.UP), this.downKey = this.game.input.keyboard.addKey(Phaser.Keyboard.DOWN), this.leftKey = this.game.input.keyboard.addKey(Phaser.Keyboard.LEFT), this.rightKey = this.game.input.keyboard.addKey(Phaser.Keyboard.RIGHT), this.upEvent = this.prevItem, this.downEvent = this.nextItem, this.emitter = new gt, this.activateGroup() } var e, i, n; return e = t, (i = [{ key: 'addNode', value: function (t) { this.children.push(t), this.selected = this.children[0], this.useBar() } }, { key: 'prevItem', value: function () { this.idx = this.idx - 1, this.idx < 0 && (this.idx = this.children.length - 1), this.selected = this.children[this.idx], this.useBar(), this.emitter.emit('previous', this, this.callbackContext) } }, { key: 'nextItem', value: function () { this.idx = (this.idx + 1) % this.children.length, this.selected = this.children[this.idx], this.useBar(), this.emitter.emit('next', this, this.callbackContext) } }, { key: 'activateGroup', value: function () { this.vertical ? (this.upKey.onDown.add(this.upEvent, this), this.downKey.onDown.add(this.downEvent, this)) : (this.leftKey.onDown.add(this.upEvent, this), this.rightKey.onDown.add(this.downEvent, this)) } }, { key: 'useBar', value: function () { this.vertical ? (this.leftKey.onDown.removeAll(), this.rightKey.onDown.removeAll(), this.leftKey.onDown.add(this.selected.upEvent, this.selected), this.rightKey.onDown.add(this.selected.downEvent, this.selected)) : (this.upKey.onDown.removeAll(), this.downKey.onDown.removeAll(), this.upKey.onDown.add(this.selected.upEvent, this.selected), this.downKey.onDown.add(this.selected.downEvent, this.selected)) } }]) && mt(e.prototype, i), n && mt(e, n), t }(), wt = {}; function xt(t, e) { if (!(t instanceof e)) throw new TypeError('Cannot call a class as a function') } function Ot(t, e) { for (var i = 0; i < e.length; i++) { var n = e[i]; n.enumerable = n.enumerable || !1, n.configurable = !0, 'value' in n && (n.writable = !0), Object.defineProperty(t, n.key, n) } } function St(t, e, i) { return e && Ot(t.prototype, e), i && Ot(t, i), t } wt.modulo = function (t, e) { return (t % e + e) % e }, wt.operators = { '+': function (t, e) { return t + e }, '-': function (t, e) { return t - e } }; var Pt = function () { function t() { var e = arguments.length > 0 && void 0 !== arguments[0] ? arguments[0] : 0, i = arguments.length > 1 && void 0 !== arguments[1] ? arguments[1] : 0, n = arguments.length > 2 && void 0 !== arguments[2] ? arguments[2] : 0, r = arguments.length > 3 && void 0 !== arguments[3] ? arguments[3] : null, o = arguments.length > 4 && void 0 !== arguments[4] ? arguments[4] : 0; xt(this, t), this.x = e, this.y = i, this.z = n, this.sprite = r, this.position = o } return St(t, [{ key: 'getSinCosOfAngle', value: function (t) { var e = t * Math.PI / 180; return { cosine: Math.cos(e), sine: Math.sin(e) } } }, { key: 'rotateY', value: function (e) { var i = this.getSinCosOfAngle(e), n = this.z * i.cosine - this.x * i.sine; return new t(this.z * i.sine + this.x * i.cosine, this.y, n) } }, { key: 'rotateX', value: function (e) { var i = this.getSinCosOfAngle(e), n = this.y * i.cosine - this.z * i.sine, r = this.y * i.sine + this.z * i.cosine; return new t(this.x, n, r) } }, { key: 'rotateZ', value: function (e) { var i = this.getSinCosOfAngle(e); return new t(this.x * i.cosine - this.y * i.sine, this.x * i.sine + this.y * i.cosine, this.z) } }, { key: 'rotate', value: function (t, e) { var i = null; return 'x' === t ? i = this.rotateX(e) : 'y' === t ? i = this.rotateY(e) : 'z' === t && (i = this.rotateZ(e)), i } }, { key: 'project', value: function (e, i, n) { return new t(this.x * n + e, -this.y * n + i, this.z) } }]), t }(), _t = function () { function t(e, i, n, r, o, a, s, u, c) { xt(this, t), this.game = e, this.xy = i, this.sprites = n, this.firstPlace = r, this.zoom = o, this.axis = a, this.rotationAxis = s, this.visibleRange = u || null, this.tweenParams = c || { duration: 300, ease: _.Quadratic.Out }, this.emitter = new gt, this.group = new X(e) } return St(t, [{ key: 'activate', value: function () { var t, e, i, n, r, o; if (this.pointsAmount = this.sprites.length, this.totalPositions = this.pointsAmount - 1, this.rotationAmount = 360 / this.pointsAmount, null !== this.visibleRange) { for (var a = [], s = 0; s <= this.totalPositions; s++)a.push(s); var u = a.slice(0, this.visibleRange.max), c = a.slice(this.visibleRange.min); this.visiblePositions = u.concat(c) } this.moving = !1, this.direction = null, this.wheelItems = []; for (var h = 2 * Math.PI / this.pointsAmount, l = 0; l < this.pointsAmount; l++)this.sprites[l].wheelPosition = l, this.group.add(this.sprites[l]), t = h * l, e = 1 * Math.cos(t), i = 1 * Math.sin(t), 'x' === this.axis ? (n = -1, r = e, o = i) : 'y' === this.axis ? (n = e, r = -1, o = i) : 'z' === this.axis && (n = e, r = i, o = -1), this.wheelItems.push(new Pt(n, r, o, this.sprites[l], l)); this.active = this.wheelItems[this.firstPlace].sprite, this.project() } }, { key: 'moveBack', value: function () { !1 === this.moving && (this.moving = !0, this.direction = 0, 'x' === this.axis || 'z' === this.axis ? this.rotationAxis[this.axis] += this.rotationAmount : this.rotationAxis[this.axis] -= this.rotationAmount, this.updatePosition('+'), this.project(), this.resetAngle()) } }, { key: 'moveForward', value: function () { !1 === this.moving && (this.moving = !0, this.direction = 1, 'x' === this.axis || 'z' === this.axis ? this.rotationAxis[this.axis] -= this.rotationAmount : this.rotationAxis[this.axis] += this.rotationAmount, this.updatePosition('-'), this.project(), this.resetAngle()) } }, { key: 'project', value: function () { var t = this, e = ['x', 'y', 'z'], i = e.indexOf(this.axis); e.splice(i, 1); for (var n = 0; n < this.wheelItems.length; n++) { var r = this.wheelItems[n].rotate(this.axis, this.rotationAxis[this.axis]).rotate(e[0], this.rotationAxis[e[0]]).rotate(e[1], this.rotationAxis[e[1]]).project(this.xy.x, this.xy.y, this.zoom), o = this.wheelItems[n].sprite; if (o.lz = r.z, this.wheelItems[n].position === this.firstPlace) o.alpha = 1, this.active = this.wheelItems[n].sprite; else if (null !== this.visibleRange) { var a = this.visiblePositions.includes(this.wheelItems[n].position); o.alpha = a ? 1 : 0 } var s = new Z(this.game); n !== this.wheelItems.length - 1 ? s.add(o, { x: r.x, y: r.y }, this.tweenParams.duration, this.tweenParams.ease) : s.add(o, { x: r.x, y: r.y }, this.tweenParams.duration, this.tweenParams.ease, (function () { t.enableMoving(), t.dispatchOnComplete() }), null, (function () { t.dispatchOnStart() }), this, null, null) } this.group.sort('lz', X.SORT_ASCENDING) } }, { key: 'dispatchOnStart', value: function () { this.emitter.emit('start', this) } }, { key: 'dispatchOnComplete', value: function () { 0 === this.direction ? this.emitter.emit('backComplete', this) : 1 === this.direction && this.emitter.emit('forwardComplete', this), this.emitter.emit('complete', this) } }, { key: 'enableMoving', value: function () { this.moving = !1 } }, { key: 'updatePosition', value: function (t) { for (var e = 0; e < this.wheelItems.length; e++) { var i = this.wheelItems[e].position; this.wheelItems[e].position = wt.operators[t](i, 1); var n = wt.modulo(this.wheelItems[e].position, this.pointsAmount); this.wheelItems[e].position = n, this.wheelItems[e].sprite.wheelPosition = n } } }, { key: 'resetAngle', value: function () { var t = this.rotationAxis[this.axis]; 360 !== t && -360 !== t || (this.rotationAxis[this.axis] = 0) } }]), t }(); function jt(t) { return (jt = 'function' == typeof Symbol && 'symbol' == typeof Symbol.iterator ? function (t) { return typeof t } : function (t) { return t && 'function' == typeof Symbol && t.constructor === Symbol && t !== Symbol.prototype ? 'symbol' : typeof t })(t) } function Tt(t, e) { for (var i = 0; i < e.length; i++) { var n = e[i]; n.enumerable = n.enumerable || !1, n.configurable = !0, 'value' in n && (n.writable = !0), Object.defineProperty(t, n.key, n) } } function Et(t) { return (Et = Object.setPrototypeOf ? Object.getPrototypeOf : function (t) { return t.__proto__ || Object.getPrototypeOf(t) })(t) } function Rt(t) { if (void 0 === t) throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); return t } function Ct(t, e) { return (Ct = Object.setPrototypeOf || function (t, e) { return t.__proto__ = e, t })(t, e) } var At = function (t) { function e(t) { var i, n, r, o = arguments.length > 1 && void 0 !== arguments[1] ? arguments[1] : 0, a = arguments.length > 2 && void 0 !== arguments[2] ? arguments[2] : 0, s = arguments.length > 3 && void 0 !== arguments[3] && arguments[3]; return function (t, e) { if (!(t instanceof e)) throw new TypeError('Cannot call a class as a function') }(this, e), n = this, i = !(r = Et(e).call(this, t)) || 'object' !== jt(r) && 'function' != typeof r ? Rt(n) : r, t.add.existing(Rt(i)), i.game = t, i.x = o, i.y = a, i.vertical = s, i } var i, n, r; return function (t, e) { if ('function' != typeof e && null !== e) throw new TypeError('Super expression must either be null or a function'); t.prototype = Object.create(e && e.prototype, { constructor: { value: t, writable: !0, configurable: !0 } }), e && Ct(t, e) }(e, t), i = e, (n = [{ key: 'setTrackScrollAreaSize', value: function () { this.vertical ? this.trackScrollAreaSize = this.track.height - this.vslice : this.trackScrollAreaSize = this.track.width - this.hslice } }, { key: 'centerStaticAxis', value: function () { this.vertical ? this.bar.x = this.track.x + this.track.width / 2 - this.bar.displayWidth / 2 : this.bar.y = this.track.y + this.track.height / 2 - this.bar.displayHeight / 2 } }]) && Tt(i.prototype, n), r && Tt(i, r), e }(X); function It(t, e) { if (!(t instanceof e)) throw new TypeError('Cannot call a class as a function') } function Dt(t, e) { for (var i = 0; i < e.length; i++) { var n = e[i]; n.enumerable = n.enumerable || !1, n.configurable = !0, 'value' in n && (n.writable = !0), Object.defineProperty(t, n.key, n) } } function Bt(t, e, i) { return e && Dt(t.prototype, e), i && Dt(t, i), t } var zt = function () { function t(e, i, n) { It(this, t), this.bar = e, this.startValue = i, this.maxValue = n, this.currentValue = i } return Bt(t, [{ key: 'getRatio', value: function () { return this.currentValue / this.maxValue } }, { key: 'getCurrentValue', value: function () { return this.currentValue } }]), t }(), Mt = function () { function t(e, i, n) { It(this, t), this.step = e, this.startValue = i, this.maxValue = n + e, this.ratio = e / n, this.ratio > 1 && (this.ratio = 1), this.currentValue = i, this.steps = []; for (var r = 0; r < this.maxValue; r += e)this.steps.push(r) } return Bt(t, [{ key: 'adjustValue', value: function (t) { this.currentValue = t } }, { key: 'getCurrentValue', value: function () { return this.currentValue } }]), t }(), Ht = function () { function t(e, i) { It(this, t), this.viewport = e, this.vertical = i, i ? (this.step = e.area.height, this.maxValue = e.realHeight) : (this.step = e.area.width, this.maxValue = e.realWidth), this.ratio = this.step / this.maxValue, this.ratio > 1 && (this.ratio = 1) } return Bt(t, [{ key: 'adjustValue', value: function (t) { this.vertical ? this.viewport.y = t + this.viewport.area.y : this.viewport.x = t + this.viewport.area.x, this.viewport.disableOutOfBounds(this.viewport.children, this, this.vertical) } }, { key: 'getCurrentValue', value: function () { return this.vertical ? this.viewport.y - this.viewport.area.y : this.viewport.x - this.viewport.area.x } }]), t }(); function Vt(t) { return (Vt = 'function' == typeof Symbol && 'symbol' == typeof Symbol.iterator ? function (t) { return typeof t } : function (t) { return t && 'function' == typeof Symbol && t.constructor === Symbol && t !== Symbol.prototype ? 'symbol' : typeof t })(t) } function Wt(t, e) { for (var i = 0; i < e.length; i++) { var n = e[i]; n.enumerable = n.enumerable || !1, n.configurable = !0, 'value' in n && (n.writable = !0), Object.defineProperty(t, n.key, n) } } function Nt(t) { return (Nt = Object.setPrototypeOf ? Object.getPrototypeOf : function (t) { return t.__proto__ || Object.getPrototypeOf(t) })(t) } function Kt(t) { if (void 0 === t) throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); return t } function Gt(t, e) { return (Gt = Object.setPrototypeOf || function (t, e) { return t.__proto__ = e, t })(t, e) } var Yt = function (t) { function e(t, i, n, r, o, a, s, u) { var c, h, l; return function (t, e) { if (!(t instanceof e)) throw new TypeError('Cannot call a class as a function') }(this, e), h = this, (c = !(l = Nt(e).call(this, t, i.x, i.y)) || 'object' !== Vt(l) && 'function' != typeof l ? Kt(h) : l).valueRange = new zt(Kt(c), n.startValue, n.maxValue), c.vertical = r || !1, c.reverse = o || !1, c.trackImage = a, c.barImage = s, c.tweenParams = u || { duration: 300, ease: _.Quadratic.Out }, c.track = new p(t, 0, 0, c.trackImage), c.track.displayOriginX = 0, c.track.displayOriginY = 0, c.add(c.track), c.bar = new p(t, 0, 0, c.barImage), c.bar.displayOriginX = 0, c.bar.displayOriginY = 0, c.add(c.bar), c.create(), c } var i, n, r; return function (t, e) { if ('function' != typeof e && null !== e) throw new TypeError('Super expression must either be null or a function'); t.prototype = Object.create(e && e.prototype, { constructor: { value: t, writable: !0, configurable: !0 } }), e && Gt(t, e) }(e, t), i = e, (n = [{ key: 'setMask', value: function () { null !== this.bar.mask && (this.bar.mask.destroy(), this.bar.mask = null); var t = new ot(this.game, this.maskX, this.maskY); this.bar.mask = t.create(this.bar.maskX, this.bar.maskY, this.maskW, this.maskH), void 0 === this.version && this.add(t) } }, { key: 'getBarPosition', value: function () { var t = this.valueRange.getRatio() / this.windowScrollAreaSize; return this.trackScrollAreaSize * t } }, { key: 'create', value: function () { this.centerStaticAxis(), this.maskW = this.bar.width, this.maskH = this.bar.height, void 0 === this.version ? (this.maskX = this.bar.x, this.maskY = this.bar.y) : (this.maskX = this.x, this.maskY = this.y), this.reverse && (this.vertical ? this.maskY += this.getBarFraction() : this.maskX += this.getBarFraction()), this.setMask(); var t = this.getBarSize(); this.reverse, this.vertical ? this.bar.mask.geometryMask.scaleY = t : this.bar.mask.geometryMask.scaleX = t, this.windowScrollAreaSize = this.valueRange.maxValue, this.vslice = this.track.height * this.valueRange.getRatio(), this.hslice = this.track.width * this.valueRange.getRatio(), this.setTrackScrollAreaSize() } }, { key: 'addScrollTweenMask', value: function (t, e, i) { new Z(this.game).add(this.bar.mask.geometryMask, t, e, i) } }, { key: 'adjustBar', value: function (t) { var e; this.valueRange.currentValue += t; var i, n, r = this.getBarSize(); void 0 === this.version ? (i = 0, n = 0) : (i = this.x, n = this.y), e = this.reverse ? this.vertical ? { scaleY: r, y: n + this.getBarFraction() } : { scaleX: r, x: i + this.getBarFraction() } : this.vertical ? { scaleY: r } : { scaleX: r }, this.addScrollTweenMask(e, this.tweenParams.duration, this.tweenParams.ease) } }, { key: 'getBarFraction', value: function () { return this.vertical ? this.track.height * this.valueRange.getRatio() : this.track.width * this.valueRange.getRatio() } }, { key: 'getBarSize', value: function () { return this.reverse ? 1 - this.valueRange.getRatio() : this.valueRange.getRatio() } }]) && Wt(i.prototype, n), r && Wt(i, r), e }(At); function Xt(t) { return (Xt = 'function' == typeof Symbol && 'symbol' == typeof Symbol.iterator ? function (t) { return typeof t } : function (t) { return t && 'function' == typeof Symbol && t.constructor === Symbol && t !== Symbol.prototype ? 'symbol' : typeof t })(t) } function Ft(t, e) { for (var i = 0; i < e.length; i++) { var n = e[i]; n.enumerable = n.enumerable || !1, n.configurable = !0, 'value' in n && (n.writable = !0), Object.defineProperty(t, n.key, n) } } function Lt(t, e) { return !e || 'object' !== Xt(e) && 'function' != typeof e ? function (t) { if (void 0 === t) throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); return t }(t) : e } function Ut(t) { return (Ut = Object.setPrototypeOf ? Object.getPrototypeOf : function (t) { return t.__proto__ || Object.getPrototypeOf(t) })(t) } function Qt(t, e) { return (Qt = Object.setPrototypeOf || function (t, e) { return t.__proto__ = e, t })(t, e) } var Zt = function (t) { function e(t) { var i, n = arguments.length > 1 && void 0 !== arguments[1] ? arguments[1] : 0, r = arguments.length > 2 && void 0 !== arguments[2] ? arguments[2] : 0; return function (t, e) { if (!(t instanceof e)) throw new TypeError('Cannot call a class as a function') }(this, e), (i = Lt(this, Ut(e).call(this, t, n, r))).emitter = new gt, i } var i, n, r; return function (t, e) { if ('function' != typeof e && null !== e) throw new TypeError('Super expression must either be null or a function'); t.prototype = Object.create(e && e.prototype, { constructor: { value: t, writable: !0, configurable: !0 } }), e && Qt(t, e) }(e, t), i = e, (n = [{ key: 'verticalTrackClick', value: function () { var t = this.game.input.mousePointer.y; t > this.bar.y + this.worldPosition.y + this.bar.displayHeight ? this.scrollDown() : t < this.bar.y + this.worldPosition.y && this.scrollUp() } }, { key: 'horizontalTrackClick', value: function () { var t = this.game.input.mousePointer.x; t > this.bar.x + this.worldPosition.x + this.bar.displayWidth ? this.scrollRight() : t < this.bar.x + this.worldPosition.x && this.scrollLeft() } }, { key: 'enableTrackClick', value: function () { var t; this.track.setInteractive(), t = this.vertical ? this.verticalTrackClick : this.horizontalTrackClick, this.track.addDownEvent(t, this) } }, { key: 'enableBarInput', value: function () { this.trackClicked = !1, this.barMoving = !1, this.bar.enableDragging(this.vertical) } }, { key: 'enableBarDrag', value: function () { var t; this.setDraggableArea(), this.bar.enableDragging(this.vertical), t = this.vertical ? this.verticalDraggableArea : this.horizontalDraggableArea, this.bar.setDragBounds(t), this.snapping && this.bar.addUpEvent(this.snapToClosestPosition, this), this.bar.addDownEvent(this.saveMousePosition, this), this.bar.addDragEvent(this.moveContent, this) } }, { key: 'saveMousePosition', value: function (t) { this.mousePointer = { x: t.x - (t.x - this.bar.x), y: t.y - (t.y - this.bar.y) } } }, { key: 'getBarPosition', value: function () { var t = this.valueRange.getCurrentValue() / this.windowScrollAreaSize; return this.trackScrollAreaSize * t } }, { key: 'getMouseDelta', value: function () { var t, e, i; if (this.trackClicked) t = { x: this.bar.x, y: this.bar.y }; else { var n = this.game.input.mousePointer; t = { x: n.x - (n.x - this.bar.x), y: n.y - (n.y - this.bar.y) } } return this.vertical ? (e = this.mousePointer.y, i = t.y) : (e = this.mousePointer.x, i = t.x), this.mousePointer = t, i < this.maxValue ? e - i : 0 } }, { key: 'addScrollTween', value: function (t) { this.mousePointer = { x: this.bar.x, y: this.bar.y }, this.trackClicked = !0, new Z(this.game).add(this.bar, t, this.tweenParams.duration, this.tweenParams.ease, this.enableBarInput, this.moveContent, null, this, this, null) } }, { key: 'scrollUp', value: function () { if (this.bar.y !== this.track.y && !this.barMoving) { var t = this.bar.y - this.vslice, e = null; this.barMoving = !0, e = t <= this.track.y ? this.minY : this.bar.y - this.vslice, this.addScrollTween({ y: e }) } } }, { key: 'scrollDown', value: function () { if (this.bar.y + this.bar.displayHeight !== this.track.y + this.track.height && !this.barMoving) { var t = this.bar.y + 2 * this.vslice, e = null; this.barMoving = !0, this.bar.disableInteractive(), e = t >= this.track.y + this.track.height ? this.maxY : this.bar.y + this.vslice, this.addScrollTween({ y: e }) } } }, { key: 'scrollLeft', value: function () { if (this.bar.x !== this.track.x && !this.barMoving) { var t = this.bar.x - this.hslice, e = null; this.barMoving = !0, this.bar.disableInteractive(), e = t <= this.track.x ? this.minX : this.bar.x - this.hslice, this.addScrollTween({ x: e }) } } }, { key: 'scrollRight', value: function () { if (this.bar.x + this.bar.displayWidth !== this.track.x + this.track.width && !this.barMoving) { var t = this.bar.x + 2 * this.hslice, e = null; this.barMoving = !0, this.bar.disableInteractive(), e = t >= this.track.x + this.track.width ? this.maxX : this.bar.x + this.hslice, this.addScrollTween({ x: e }) } } }, { key: 'moveContent', value: function () { var t = this.getGripPositionRatio() * this.windowScrollAreaSize; this.valueRange.adjustValue(t), this.emitter.emit('movement', this) } }]) && Ft(i.prototype, n), r && Ft(i, r), e }(At); function qt(t) { return (qt = 'function' == typeof Symbol && 'symbol' == typeof Symbol.iterator ? function (t) { return typeof t } : function (t) { return t && 'function' == typeof Symbol && t.constructor === Symbol && t !== Symbol.prototype ? 'symbol' : typeof t })(t) } function Jt(t, e) { for (var i = 0; i < e.length; i++) { var n = e[i]; n.enumerable = n.enumerable || !1, n.configurable = !0, 'value' in n && (n.writable = !0), Object.defineProperty(t, n.key, n) } } function $t(t) { return ($t = Object.setPrototypeOf ? Object.getPrototypeOf : function (t) { return t.__proto__ || Object.getPrototypeOf(t) })(t) } function te(t) { if (void 0 === t) throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); return t } function ee(t, e) { return (ee = Object.setPrototypeOf || function (t, e) { return t.__proto__ = e, t })(t, e) } var ie = function (t) { function e(t, i, n, r, o, a, s) { var u, c, h; return function (t, e) { if (!(t instanceof e)) throw new TypeError('Cannot call a class as a function') }(this, e), c = this, (u = !(h = $t(e).call(this, t)) || 'object' !== qt(h) && 'function' != typeof h ? te(c) : h).content = i, u.valueRange = new Ht(i, r), u.vertical = r || !1, u.draggable = n || !1, u.trackImage = o, u.barImage = a, u.minBarSize = 44, u.tweenParams = s || { duration: 300, ease: _.Quadratic.Out }, u.trackClicked = !1, u.barMoving = !1, u.mousePointer = null, u.track = new p(t, u.x, u.y, u.trackImage), u.track.displayOriginX = 0, u.track.displayOriginY = 0, u.add(u.track), u.draggable && u.enableTrackClick(), u.bar = new P(t, u.x, u.y, u.barImage, u.moveContent, te(u), 1, 0), u.bar.displayOriginX = 0, u.bar.displayOriginY = 0, u.add(u.bar), u.resizeBar(), u.minY = u.track.y, u.maxY = u.track.y + u.track.height - u.bar.displayHeight, u.minX = u.track.x, u.maxX = u.track.x + u.track.width - u.bar.displayWidth, u.create(), u.vertical ? (u.maxValue = u.track.displayHeight + u.worldPosition.y, void 0 === u.version && (u.maxValue += u.bar.displayHeight)) : (u.maxValue = u.track.displayWidth + u.worldPosition.x, void 0 === u.version && (u.maxValue += u.bar.displayWidth)), u } var i, n, r; return function (t, e) { if ('function' != typeof e && null !== e) throw new TypeError('Super expression must either be null or a function'); t.prototype = Object.create(e && e.prototype, { constructor: { value: t, writable: !0, configurable: !0 } }), e && ee(t, e) }(e, t), i = e, (n = [{ key: 'resizeBar', value: function () { var t; (t = this.vertical ? this.track.height * this.valueRange.ratio : this.track.width * this.valueRange.ratio) < this.minBarSize && (t = this.minBarSize), this.vertical ? this.bar.displayHeight = t : this.bar.displayWidth = t } }, { key: 'create', value: function () { this.centerStaticAxis(), this.draggable && this.enableBarDrag(), this.windowScrollAreaSize = this.valueRange.maxValue - this.valueRange.step, this.vslice = this.track.displayHeight * this.valueRange.ratio, this.hslice = this.track.displayWidth * this.valueRange.ratio, this.setTrackScrollAreaSize(), this.mousePointer = { x: this.bar.x, y: this.bar.y }, this.setInitialBarPosition() } }, { key: 'setDraggableArea', value: function () { var t = this.track.displayHeight; 3 === this.version && (t -= this.bar.displayHeight), this.verticalDraggableArea = { x: this.track.x - (this.bar.displayWidth - this.track.width) / 2, y: this.track.y, w: this.bar.displayWidth, h: t }, this.horizontalDraggableArea = { x: this.track.x, y: this.track.y - (this.bar.displayHeight - this.track.height) / 2, w: this.track.width, h: this.bar.displayHeight } } }, { key: 'setInitialBarPosition', value: function () { var t = this.getBarPosition(); this.vertical ? this.bar.y = t + this.track.y : this.bar.x = t + this.track.x } }, { key: 'getGripPositionRatio', value: function () { var t = this.getBarPosition() + this.getMouseDelta(); t > 0 ? t = 0 : t <= -this.trackScrollAreaSize && (t = -this.trackScrollAreaSize), this.vertical ? this.bar.y <= this.track.y ? t = 0 : this.bar.y + this.bar.displayHeight >= this.track.y + this.track.displayHeight && (t = -this.trackScrollAreaSize) : this.bar.x <= this.track.x ? t = 0 : this.bar.x + this.bar.displayWidth >= this.track.x + this.track.displayWidth && (t = -this.trackScrollAreaSize); var e = t / this.trackScrollAreaSize; return Number.isNaN(e) && (e = 0), e } }]) && Jt(i.prototype, n), r && Jt(i, r), e }(Zt); function ne(t) { return (ne = 'function' == typeof Symbol && 'symbol' == typeof Symbol.iterator ? function (t) { return typeof t } : function (t) { return t && 'function' == typeof Symbol && t.constructor === Symbol && t !== Symbol.prototype ? 'symbol' : typeof t })(t) } function re(t, e) { for (var i = 0; i < e.length; i++) { var n = e[i]; n.enumerable = n.enumerable || !1, n.configurable = !0, 'value' in n && (n.writable = !0), Object.defineProperty(t, n.key, n) } } function oe(t) { return (oe = Object.setPrototypeOf ? Object.getPrototypeOf : function (t) { return t.__proto__ || Object.getPrototypeOf(t) })(t) } function ae(t) { if (void 0 === t) throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); return t } function se(t, e) { return (se = Object.setPrototypeOf || function (t, e) { return t.__proto__ = e, t })(t, e) } var ue = function (t) { function e(t, i, n, r, o, a, s, u) { var c, h, l; return function (t, e) { if (!(t instanceof e)) throw new TypeError('Cannot call a class as a function') }(this, e), h = this, (c = !(l = oe(e).call(this, t, i.x, i.y)) || 'object' !== ne(l) && 'function' != typeof l ? ae(h) : l).valueRange = new Mt(n.step, n.startValue, n.maxValue), c.vertical = o || !1, c.draggable = r || !1, c.trackImage = a, c.barImage = s, c.tweenParams = u || { duration: 300, ease: _.Quadratic.Out }, c.trackClicked = !1, c.barMoving = !1, c.mousePointer = null, c.track = new p(t, 0, 0, c.trackImage), c.track.displayOriginX = 0, c.track.displayOriginY = 0, c.add(c.track), c.draggable && c.enableTrackClick(), c.bar = new P(t, c.x, c.y, c.barImage, c.moveContent, ae(c), 1, 0), c.bar.displayOriginX = 0, c.bar.displayOriginY = 0, c.bg = new I(t, { x: 0, y: 0 }), c.add(c.bg), c.sendToBack(c.bg), c.bg.fillStyle(16711680, 0), c.vertical ? c.bg.fillRect(0, 0 - c.bar.height / 2, 1, c.track.height + c.bar.height) : c.bg.fillRect(0 - c.bar.width / 2, 0, c.track.width + c.bar.width, 1), c.snapping = !0, c.add(c.bar), c.minY = c.track.y - c.bar.height / 2, c.maxY = c.track.y + c.track.height - c.bar.height / 2, c.minX = c.track.x - c.bar.width / 2, c.maxX = c.track.x + c.track.width - c.bar.width / 2, c.create(), c.vertical ? (c.upEvent = c.scrollUp, c.downEvent = c.scrollDown) : (c.upEvent = c.scrollLeft, c.downEvent = c.scrollRight), c.vertical ? (c.maxValue = c.track.displayHeight + c.worldPosition.y, void 0 === c.version && (c.maxValue += c.bar.displayHeight)) : (c.maxValue = c.track.displayWidth + c.worldPosition.x, void 0 === c.version && (c.maxValue += c.bar.displayWidth)), c } var i, n, r; return function (t, e) { if ('function' != typeof e && null !== e) throw new TypeError('Super expression must either be null or a function'); t.prototype = Object.create(e && e.prototype, { constructor: { value: t, writable: !0, configurable: !0 } }), e && se(t, e) }(e, t), i = e, (n = [{ key: 'create', value: function () { this.centerStaticAxis(), this.draggable && this.enableBarDrag(), this.windowScrollAreaSize = this.valueRange.maxValue - this.valueRange.step, this.vslice = this.track.displayHeight * this.valueRange.ratio, this.hslice = this.track.displayWidth * this.valueRange.ratio, this.setTrackScrollAreaSize(), this.setInitialBarPosition(), this.mousePointer = { x: this.bar.x, y: this.bar.y } } }, { key: 'setDraggableArea', value: function () { var t = this.track.displayHeight; void 0 === this.version && (t += this.bar.displayHeight), this.verticalDraggableArea = { x: this.track.x - (this.bar.displayWidth - this.track.displayWidth) / 2, y: this.track.y - this.bar.displayHeight / 2, w: this.bar.displayWidth, h: t }, this.horizontalDraggableArea = { x: this.track.x - this.bar.displayWidth / 2, y: this.track.y - (this.bar.displayHeight - this.track.displayHeight) / 2, w: this.track.displayWidth + this.bar.displayWidth, h: this.bar.displayHeight } } }, { key: 'setTrackScrollAreaSize', value: function () { this.vertical ? this.trackScrollAreaSize = this.track.displayHeight : this.trackScrollAreaSize = this.track.displayWidth } }, { key: 'setInitialBarPosition', value: function () { var t = this.getBarPosition(); this.vertical ? this.bar.y = t + this.track.y - this.bar.displayHeight / 2 : this.bar.x = t + this.track.x - this.bar.displayWidth / 2 } }, { key: 'getClosestPosition', value: function () { for (var t = this.valueRange.getCurrentValue(), e = Math.abs(t - this.valueRange.steps[0]), i = this.valueRange.steps[0], n = 0; n < this.valueRange.steps.length; n++) { var r = Math.abs(t - this.valueRange.steps[n]); r < e && (e = r, i = this.valueRange.steps[n]) } return i } }, { key: 'snapToClosestPosition', value: function () { var t = this.getClosestPosition(); this.valueRange.adjustValue(t), this.moveContent(), this.setInitialBarPosition() } }, { key: 'addScrollTween', value: function (t) { var e = this; this.mousePointer = { x: this.bar.x, y: this.bar.y }, this.trackClicked = !0, new Z(this.game).add(this.bar, t, this.tweenParams.duration, this.tweenParams.ease, (function () { e.moveContent(), e.enableBarInput() }), null, null, this, null, null) } }, { key: 'getGripPositionRatio', value: function () { var t = this.getBarPosition() - this.getMouseDelta(); t < 0 ? t = 0 : t >= this.trackScrollAreaSize && (t = this.trackScrollAreaSize), this.vertical ? this.bar.y <= this.track.y ? t = 0 : this.bar.y + this.bar.displayHeight >= this.track.y + this.track.displayHeight && (t = this.trackScrollAreaSize) : this.bar.x <= this.track.x ? t = 0 : this.bar.x + this.bar.displayWidth >= this.track.x + this.track.displayWidth && (t = this.trackScrollAreaSize); var e = t / this.trackScrollAreaSize; return Number.isNaN(e) && (e = 0), e } }]) && re(i.prototype, n), r && re(i, r), e }(Zt), ce = { TOP_LEFT: 0, TOP_CENTER: 1, TOP_RIGHT: 2, LEFT_TOP: 3, LEFT_CENTER: 4, LEFT_BOTTOM: 5, CENTER: 6, RIGHT_TOP: 7, RIGHT_CENTER: 8, RIGHT_BOTTOM: 9, BOTTOM_LEFT: 10, BOTTOM_CENTER: 11, BOTTOM_RIGHT: 12 }; function he(t) { return (he = 'function' == typeof Symbol && 'symbol' == typeof Symbol.iterator ? function (t) { return typeof t } : function (t) { return t && 'function' == typeof Symbol && t.constructor === Symbol && t !== Symbol.prototype ? 'symbol' : typeof t })(t) } function le(t, e) { for (var i = 0; i < e.length; i++) { var n = e[i]; n.enumerable = n.enumerable || !1, n.configurable = !0, 'value' in n && (n.writable = !0), Object.defineProperty(t, n.key, n) } } function fe(t) { return (fe = Object.setPrototypeOf ? Object.getPrototypeOf : function (t) { return t.__proto__ || Object.getPrototypeOf(t) })(t) } function ye(t) { if (void 0 === t) throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); return t } function pe(t, e) { return (pe = Object.setPrototypeOf || function (t, e) { return t.__proto__ = e, t })(t, e) } var de = function (t) { function e(t) { var i, n, r, o = arguments.length > 1 && void 0 !== arguments[1] ? arguments[1] : 0, a = arguments.length > 2 && void 0 !== arguments[2] ? arguments[2] : 0, s = arguments.length > 3 && void 0 !== arguments[3] ? arguments[3] : null; return function (t, e) { if (!(t instanceof e)) throw new TypeError('Cannot call a class as a function') }(this, e), n = this, i = !(r = fe(e).call(this, t)) || 'object' !== he(r) && 'function' != typeof r ? ye(n) : r, t.add.existing(ye(i)), i.x = o, i.y = a, i.background = null, null !== s && (i.background = new p(t, 0, 0, s), t.add.existing(i.background), i.background.sendToBack(), i.background.alignIn(ye(i), ce.TOP_LEFT)), i } var i, n, r; return function (t, e) { if ('function' != typeof e && null !== e) throw new TypeError('Super expression must either be null or a function'); t.prototype = Object.create(e && e.prototype, { constructor: { value: t, writable: !0, configurable: !0 } }), e && pe(t, e) }(e, t), i = e, (n = [{ key: 'addNode', value: function (t) { var e = arguments.length > 1 && void 0 !== arguments[1] ? arguments[1] : 0, i = arguments.length > 2 && void 0 !== arguments[2] ? arguments[2] : 0, n = arguments.length > 3 && void 0 !== arguments[3] ? arguments[3] : null, r = n || this.alignment; t instanceof X || (t.displayOriginX = 0, t.displayOriginY = 0), this.add(t), this.alignNodeToPrevious(t, r, e, i), 'enableBarDrag' in t && t.enableBarDrag() } }]) && le(i.prototype, n), r && le(i, r), e }(X); function be(t) { return (be = 'function' == typeof Symbol && 'symbol' == typeof Symbol.iterator ? function (t) { return typeof t } : function (t) { return t && 'function' == typeof Symbol && t.constructor === Symbol && t !== Symbol.prototype ? 'symbol' : typeof t })(t) } function ve(t, e) { return !e || 'object' !== be(e) && 'function' != typeof e ? function (t) { if (void 0 === t) throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); return t }(t) : e } function ge(t) { return (ge = Object.setPrototypeOf ? Object.getPrototypeOf : function (t) { return t.__proto__ || Object.getPrototypeOf(t) })(t) } function me(t, e) { return (me = Object.setPrototypeOf || function (t, e) { return t.__proto__ = e, t })(t, e) } var ke = function (t) { function e(t) { var i, n = arguments.length > 1 && void 0 !== arguments[1] ? arguments[1] : 0, r = arguments.length > 2 && void 0 !== arguments[2] ? arguments[2] : 0, o = arguments.length > 3 && void 0 !== arguments[3] ? arguments[3] : null; return function (t, e) { if (!(t instanceof e)) throw new TypeError('Cannot call a class as a function') }(this, e), (i = ve(this, ge(e).call(this, t, n, r, o))).alignment = ce.BOTTOM_CENTER, i } return function (t, e) { if ('function' != typeof e && null !== e) throw new TypeError('Super expression must either be null or a function'); t.prototype = Object.create(e && e.prototype, { constructor: { value: t, writable: !0, configurable: !0 } }), e && me(t, e) }(e, t), e }(de); function we(t) { return (we = 'function' == typeof Symbol && 'symbol' == typeof Symbol.iterator ? function (t) { return typeof t } : function (t) { return t && 'function' == typeof Symbol && t.constructor === Symbol && t !== Symbol.prototype ? 'symbol' : typeof t })(t) } function xe(t, e) { return !e || 'object' !== we(e) && 'function' != typeof e ? function (t) { if (void 0 === t) throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); return t }(t) : e } function Oe(t) { return (Oe = Object.setPrototypeOf ? Object.getPrototypeOf : function (t) { return t.__proto__ || Object.getPrototypeOf(t) })(t) } function Se(t, e) { return (Se = Object.setPrototypeOf || function (t, e) { return t.__proto__ = e, t })(t, e) } var Pe = function (t) { function e(t) { var i, n = arguments.length > 1 && void 0 !== arguments[1] ? arguments[1] : 0, r = arguments.length > 2 && void 0 !== arguments[2] ? arguments[2] : 0, o = arguments.length > 3 && void 0 !== arguments[3] ? arguments[3] : null; return function (t, e) { if (!(t instanceof e)) throw new TypeError('Cannot call a class as a function') }(this, e), (i = xe(this, Oe(e).call(this, t, n, r, o))).alignment = ce.RIGHT_CENTER, i } return function (t, e) { if ('function' != typeof e && null !== e) throw new TypeError('Super expression must either be null or a function'); t.prototype = Object.create(e && e.prototype, { constructor: { value: t, writable: !0, configurable: !0 } }), e && Se(t, e) }(e, t), e }(de); function _e(t) { return (_e = 'function' == typeof Symbol && 'symbol' == typeof Symbol.iterator ? function (t) { return typeof t } : function (t) { return t && 'function' == typeof Symbol && t.constructor === Symbol && t !== Symbol.prototype ? 'symbol' : typeof t })(t) } function je(t, e) { for (var i = 0; i < e.length; i++) { var n = e[i]; n.enumerable = n.enumerable || !1, n.configurable = !0, 'value' in n && (n.writable = !0), Object.defineProperty(t, n.key, n) } } function Te(t) { return (Te = Object.setPrototypeOf ? Object.getPrototypeOf : function (t) { return t.__proto__ || Object.getPrototypeOf(t) })(t) } function Ee(t) { if (void 0 === t) throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); return t } function Re(t, e) { return (Re = Object.setPrototypeOf || function (t, e) { return t.__proto__ = e, t })(t, e) } var Ce = function (t) { function e(t, i, n, r, o) { var a, s, u; !function (t, e) { if (!(t instanceof e)) throw new TypeError('Cannot call a class as a function') }(this, e), s = this, a = !(u = Te(e).call(this, t)) || 'object' !== _e(u) && 'function' != typeof u ? Ee(s) : u, t.add.existing(Ee(a)), a.x = i, a.y = n, a.area = { x: i, y: n, width: r, height: o }; var c = new ot(t, i, n); return void 0 === a.version ? a.mask = c.create(i, n, r, o) : a.mask = c.create(0, 0, r, o), a } var i, n, r; return function (t, e) { if ('function' != typeof e && null !== e) throw new TypeError('Super expression must either be null or a function'); t.prototype = Object.create(e && e.prototype, { constructor: { value: t, writable: !0, configurable: !0 } }), e && Re(t, e) }(e, t), i = e, (n = [{ key: 'addNode', value: function (t) { this.add(t) } }, { key: 'disableOutOfBounds', value: function (t, e, i) { var n, r, o, a; if (void 0 !== t) for (var s = 0; s < t.length; s++)(n = t[s]).inputEnabled = !0, a = n.world || n, i ? (r = a.y, o = e.viewport.area.y) : (r = a.x, o = e.viewport.area.x), r < o && (n.inputEnabled = !1), this.disableOutOfBounds(n.children, e, i) } }]) && je(i.prototype, n), r && je(i, r), e }(X); i.d(e, 'TextSprite', (function () { return bt })), i.d(e, 'TextButton', (function () { return vt })), i.d(e, 'KeyboardGroup', (function () { return kt })), i.d(e, 'Wheel3D', (function () { return _t })), i.d(e, 'QuantityBar', (function () { return Yt })), i.d(e, 'Scrollbar', (function () { return ie })), i.d(e, 'ValueBar', (function () { return ue })), i.d(e, 'Frame', (function () { return de })), i.d(e, 'Column', (function () { return ke })), i.d(e, 'Row', (function () { return Pe })), i.d(e, 'Viewport', (function () { return Ce })), i.d(e, 'Button', (function () { return P })) }]) })); // eslint-disable-line
@@ -7,6 +505,7 @@
 // prettier-ignore
 !function (a, b, c, d, e, f, g, h, i) { function j(a) { var b, c = a.length, e = this, f = 0, g = e.i = e.j = 0, h = e.S = []; for (c || (a = [c++]); d > f;)h[f] = f++; for (f = 0; d > f; f++)h[f] = h[g = s & g + a[f % c] + (b = h[f])], h[g] = b; (e.g = function (a) { for (var b, c = 0, f = e.i, g = e.j, h = e.S; a--;)b = h[f = s & f + 1], c = c * d + h[s & (h[f] = h[g = s & g + b]) + (h[g] = b)]; return e.i = f, e.j = g, c })(d) } function k(a, b) { var c, d = [], e = typeof a; if (b && 'object' == e) for (c in a) try { d.push(k(a[c], b - 1)) } catch (f) { } return d.length ? d : 'string' == e ? a : a + '\0' } function l(a, b) { for (var c, d = a + '', e = 0; e < d.length;)b[s & e] = s & (c ^= 19 * b[s & e]) + d.charCodeAt(e++); return n(b) } function m(c) { try { return o ? n(o.randomBytes(d)) : (a.crypto.getRandomValues(c = new Uint8Array(d)), n(c)) } catch (e) { return [+new Date, a, (c = a.navigator) && c.plugins, a.screen, n(b)] } } function n(a) { return String.fromCharCode.apply(0, a) } var o, p = c.pow(d, e), q = c.pow(2, f), r = 2 * q, s = d - 1, t = c['seed' + i] = function (a, f, g) { var h = []; f = 1 == f ? { entropy: !0 } : f || {}; var o = l(k(f.entropy ? [a, n(b)] : null == a ? m() : a, 3), h), s = new j(h); return l(n(s.S), b), (f.pass || g || function (a, b, d) { return d ? (c[i] = a, b) : a })(function () { for (var a = s.g(e), b = p, c = 0; q > a;)a = (a + c) * d, b *= d, c = s.g(1); for (; a >= r;)a /= 2, b /= 2, c >>>= 1; return (a + c) / b }, o, 'global' in f ? f.global : this == c) }; if (l(c[i](), b), g && g.exports) { g.exports = t; try { o = require('crypto') } catch (u) { } } else h && h.amd && h(function () { return t }) }(this, [], Math, 256, 6, 52, 'object' == typeof module && module, 'function' == typeof define && define, 'random'); // eslint-disable-line
 // #endregion
+/* javascript-obfuscator:enable */
 
 // #region Device Type
 // prettier-ignore
@@ -243,7 +742,7 @@ function preload() {
 
   this.load.image(assets.collectibles.coffee, 'js/assets/coffee.png')
   this.load.image('underwaterBg', 'js/assets/underwaterBG.png')
-  this.load.image('title', 'js/assets/KrakenFlapWhite.png')
+  this.load.image('title', 'js/assets/title.png')
   this.load.image('gameOver', 'js/assets/GameOver.png')
   this.load.image(assets.interface.leaderboard.gold, 'js/assets/gold.png')
   this.load.image(assets.interface.leaderboard.silver, 'js/assets/silver.png')
@@ -317,7 +816,8 @@ function create() {
   tentaclesGroup = this.physics.add.group()
   coffeeGroup = this.physics.add.group()
 
-  title = this.add.image(screenCenterWidth, 0, 'title')
+  title = this.add.image(0, -200, 'title')
+  title.setOrigin(0)
   title.setDepth(30)
   title.visible = false
 
