@@ -17,6 +17,9 @@ function obfuscate(file, output) {
     splitStrings: true,
     renameGlobals: true
   })
+  if (!fs.existsSync('./obfuscated')) {
+    fs.mkdirSync('./obfuscated')
+  }
   fs.writeFileSync(output, obfuscated.getObfuscatedCode())
 }
 
