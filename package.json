@@ -12,7 +12,7 @@
   "license": "UNLICENSED",
   "dependencies": {
     "compression": "^1.7.4",
-    "express": "^4.19.2",
+    "express": "^4.21.0",
     "phaser": "^3.55.2",
     "phaser-ui-tools": "^2.0.0-beta"
   },
